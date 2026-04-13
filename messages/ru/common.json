@@ -1,0 +1,44 @@
+{
+  "brand": {
+    "name": "Aygoot",
+    "tagline": "Частные дома в Дилижане"
+  },
+  "navigation": {
+    "home": "Главная",
+    "houses": "Дома",
+    "about": "О проекте",
+    "contact": "Контакты",
+    "account": "Аккаунт",
+    "myBookings": "Мои бронирования",
+    "admin": "Админ"
+  },
+  "actions": {
+    "viewAll": "Смотреть все",
+    "explore": "Смотреть дома",
+    "send": "Отправить",
+    "submit": "Подтвердить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "logout": "Выйти",
+    "login": "Войти",
+    "register": "Создать аккаунт",
+    "requestBooking": "Отправить запрос",
+    "learnMore": "Подробнее",
+    "viewHouse": "Смотреть дом",
+    "back": "Назад"
+  },
+  "footer": {
+    "description": "Подборка частных домов в Дилижане для гостей, которым важны тишина, тепло и надежный процесс бронирования.",
+    "contactTitle": "Связаться с Aygoot",
+    "rights": "Aygoot. Все права защищены.",
+    "instagram": "Instagram"
+  },
+  "status": {
+    "draft": "Черновик",
+    "published": "Опубликован",
+    "pending": "На рассмотрении",
+    "confirmed": "Подтвержден",
+    "rejected": "Отклонен",
+    "cancelled": "Отменен"
+  }
+}

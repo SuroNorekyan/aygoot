@@ -1,0 +1,21 @@
+{
+  "hero": {
+    "eyebrow": "About Aygoot",
+    "title": "A calmer way to discover premium private stays in Dilijan.",
+    "description": "Aygoot is designed as a curated hospitality platform, not a generic listing wall. The goal is to make finding and requesting the right house feel elegant, trustworthy, and simple."
+  },
+  "pillars": [
+    {
+      "title": "Curated, not crowded",
+      "description": "A tighter collection means better presentation, more clarity, and stronger guest trust."
+    },
+    {
+      "title": "Nature-forward design",
+      "description": "The brand language draws from wood, forest shadow, mountain light, and quiet warmth."
+    },
+    {
+      "title": "Built for real operations",
+      "description": "Guests get clarity, while admins get practical tools to review requests and manage homes."
+    }
+  ]
+}

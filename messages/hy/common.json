@@ -1,0 +1,44 @@
+{
+  "brand": {
+    "name": "Aygoot",
+    "tagline": "Մասնավոր տներ Դիլիջանում"
+  },
+  "navigation": {
+    "home": "Գլխավոր",
+    "houses": "Տներ",
+    "about": "Մեր մասին",
+    "contact": "Կապ",
+    "account": "Ակաունթ",
+    "myBookings": "Իմ ամրագրումները",
+    "admin": "Ադմին"
+  },
+  "actions": {
+    "viewAll": "Տեսնել բոլորը",
+    "explore": "Դիտել տները",
+    "send": "Ուղարկել",
+    "submit": "Հաստատել",
+    "save": "Պահպանել",
+    "cancel": "Չեղարկել",
+    "logout": "Դուրս գալ",
+    "login": "Մուտք",
+    "register": "Ստեղծել հաշիվ",
+    "requestBooking": "Ուղարկել հարցում",
+    "learnMore": "Իմանալ ավելին",
+    "viewHouse": "Տեսնել տունը",
+    "back": "Հետ"
+  },
+  "footer": {
+    "description": "Դիլիջանի ընտրված մասնավոր տներ՝ հանգիստ, ջերմ և վստահելի ամրագրման փորձի համար։",
+    "contactTitle": "Կապ Aygoot-ի հետ",
+    "rights": "Aygoot. Բոլոր իրավունքները պաշտպանված են։",
+    "instagram": "Instagram"
+  },
+  "status": {
+    "draft": "Սևագիր",
+    "published": "Հրապարակված",
+    "pending": "Սպասման մեջ",
+    "confirmed": "Հաստատված",
+    "rejected": "Մերժված",
+    "cancelled": "Չեղարկված"
+  }
+}

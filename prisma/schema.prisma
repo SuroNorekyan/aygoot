@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum HouseStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+enum InquiryStatus {
+  NEW
+  RESPONDED
+  ARCHIVED
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  role           Role      @default(USER)
+  passwordHash   String?
+  twoFAEnabled   Boolean   @default(false)
+  twoFASecret    String?
+  recoveryCodes  String[]  @default([])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  accounts       Account[]
+  sessions       Session[]
+  bookings       Booking[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model House {
+  id               String              @id @default(cuid())
+  slug             String              @unique
+  status           HouseStatus         @default(DRAFT)
+  featured         Boolean             @default(false)
+  pricePerNightAmd Int
+  guestCapacity    Int
+  bedrooms         Int
+  bathrooms        Int
+  latitude         Float?
+  longitude        Float?
+  sortOrder        Int                 @default(0)
+  publishedAt      DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  translations     HouseTranslation[]
+  images           HouseImage[]
+  houseAmenities   HouseAmenity[]
+  bookings         Booking[]
+  availability     AvailabilityBlock[]
+}
+
+model HouseTranslation {
+  id               String @id @default(cuid())
+  houseId          String
+  locale           String
+  name             String
+  shortDescription String @db.Text
+  description      String @db.Text
+  locationLabel    String
+  nearbyLabel      String?
+
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@unique([houseId, locale])
+  @@index([locale])
+}
+
+model HouseImage {
+  id          String   @id @default(cuid())
+  houseId     String
+  url         String
+  alt         String
+  width       Int?
+  height      Int?
+  blurDataUrl String?  @db.Text
+  position    Int      @default(0)
+  isCover     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@index([houseId, position])
+}
+
+model Amenity {
+  id        String         @id @default(cuid())
+  slug      String         @unique
+  label     String
+  icon      String?
+  createdAt DateTime       @default(now())
+  houses    HouseAmenity[]
+}
+
+model HouseAmenity {
+  houseId   String
+  amenityId String
+  createdAt DateTime @default(now())
+
+  house   House   @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  amenity Amenity @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@id([houseId, amenityId])
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  houseId        String
+  userId         String?
+  guestName      String
+  guestEmail     String
+  guestPhone     String
+  locale         String
+  checkIn        DateTime     @db.Date
+  checkOut       DateTime     @db.Date
+  guestCount     Int
+  totalPriceAmd  Int
+  status         BookingStatus @default(PENDING)
+  guestNotes     String?      @db.Text
+  adminNotes     String?      @db.Text
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([houseId, status, checkIn, checkOut])
+  @@index([userId, createdAt])
+}
+
+model AvailabilityBlock {
+  id        String   @id @default(cuid())
+  houseId    String
+  startDate  DateTime @db.Date
+  endDate    DateTime @db.Date
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@index([houseId, startDate, endDate])
+}
+
+model ContactInquiry {
+  id        String        @id @default(cuid())
+  locale    String
+  name      String
+  email     String
+  phone     String?
+  message   String        @db.Text
+  status    InquiryStatus @default(NEW)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
