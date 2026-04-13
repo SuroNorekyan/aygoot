@@ -1,0 +1,51 @@
+{
+  "hero": {
+    "eyebrow": "Curated Dilijan stays",
+    "title": "Private houses shaped by forest air, warm light, and quiet comfort.",
+    "subtitle": "Aygoot brings together a small collection of premium houses and cabins in Dilijan, designed for calm getaways, romantic weekends, and elegant family stays.",
+    "primary": "Explore houses",
+    "secondary": "Why Aygoot"
+  },
+  "featured": {
+    "eyebrow": "Featured houses",
+    "title": "A focused collection, not a crowded marketplace.",
+    "subtitle": "Each home is selected for atmosphere, privacy, quality, and a sense of place."
+  },
+  "story": {
+    "eyebrow": "Why Dilijan",
+    "title": "Woodland calm with the comfort of a premium retreat.",
+    "body": "Dilijan offers cooler air, pine forests, mountain silence, and a slower rhythm. Aygoot pairs that natural setting with a more polished, trustworthy booking experience."
+  },
+  "experience": {
+    "eyebrow": "The Aygoot standard",
+    "title": "Built to feel premium before, during, and after booking.",
+    "items": [
+      "Mobile-first booking requests with quick clarity on status",
+      "Curated private homes instead of generic listing overload",
+      "Warm visual design inspired by wood, stone, and mountain light"
+    ]
+  },
+  "trust": {
+    "eyebrow": "Stay with confidence",
+    "title": "Simple for guests, powerful for careful hosting.",
+    "items": [
+      {
+        "title": "Availability is reviewed carefully",
+        "description": "Aygoot starts with a request-first flow so every stay is checked before confirmation."
+      },
+      {
+        "title": "Guest or account booking",
+        "description": "Book as a guest or keep your stay history in a personal account."
+      },
+      {
+        "title": "Thoughtful communication",
+        "description": "Booking updates are sent clearly by email so guests always know the next step."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Find a quieter base in Dilijan.",
+    "description": "Browse the current collection and send a stay request in a few steps.",
+    "button": "Browse houses"
+  }
+}

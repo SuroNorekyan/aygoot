@@ -1,0 +1,44 @@
+{
+  "brand": {
+    "name": "Aygoot",
+    "tagline": "Private houses in Dilijan"
+  },
+  "navigation": {
+    "home": "Home",
+    "houses": "Houses",
+    "about": "About",
+    "contact": "Contact",
+    "account": "Account",
+    "myBookings": "My bookings",
+    "admin": "Admin"
+  },
+  "actions": {
+    "viewAll": "View all",
+    "explore": "Explore houses",
+    "send": "Send message",
+    "submit": "Submit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "logout": "Log out",
+    "login": "Log in",
+    "register": "Create account",
+    "requestBooking": "Request booking",
+    "learnMore": "Learn more",
+    "viewHouse": "View house",
+    "back": "Back"
+  },
+  "footer": {
+    "description": "Curated private houses in Dilijan for guests who want calm, warmth, and a trustworthy booking experience.",
+    "contactTitle": "Reach Aygoot",
+    "rights": "Aygoot. All rights reserved.",
+    "instagram": "Instagram"
+  },
+  "status": {
+    "draft": "Draft",
+    "published": "Published",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled"
+  }
+}

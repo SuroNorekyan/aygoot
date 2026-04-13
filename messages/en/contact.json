@@ -1,0 +1,15 @@
+{
+  "hero": {
+    "eyebrow": "Contact",
+    "title": "Ask about a stay, dates, or house details.",
+    "description": "If you need guidance before booking, Aygoot can help you find the right house and timing."
+  },
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "submit": "Send inquiry",
+    "success": "Your message has been sent."
+  }
+}

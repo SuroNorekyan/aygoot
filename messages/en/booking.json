@@ -1,0 +1,22 @@
+{
+  "form": {
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+    "name": "Guest name",
+    "email": "Email",
+    "phone": "Phone",
+    "notes": "Notes",
+    "submit": "Send booking request"
+  },
+  "success": {
+    "title": "Booking request sent",
+    "description": "Aygoot received your request and will review availability shortly."
+  },
+  "states": {
+    "pending": "Pending review",
+    "confirmed": "Confirmed",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled"
+  }
+}

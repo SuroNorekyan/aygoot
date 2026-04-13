@@ -1,0 +1,26 @@
+{
+  "listing": {
+    "eyebrow": "All houses",
+    "title": "Private homes for slow mornings, long weekends, and clean mountain air.",
+    "subtitle": "Browse Aygoot’s current collection in Dilijan."
+  },
+  "card": {
+    "from": "from",
+    "perNight": "per night",
+    "guests": "guests",
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "featured": "Featured"
+  },
+  "detail": {
+    "perNight": "per night",
+    "amenities": "Amenities",
+    "aboutHouse": "About this house",
+    "nearby": "What makes the setting special",
+    "requestStay": "Request your stay",
+    "availabilityHint": "Confirmed bookings and manual blocks are checked before approval.",
+    "hostResponse": "Most requests are reviewed quickly by the Aygoot team.",
+    "location": "Location",
+    "gallery": "Gallery"
+  }
+}

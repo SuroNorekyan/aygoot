@@ -1,0 +1,23 @@
+{
+  "auth": {
+    "title": "Account",
+    "subtitle": "Sign in to view your booking history or create an account for future stays.",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "passwordHint": "Use at least 8 characters with uppercase, lowercase, and a number.",
+    "login": "Log in",
+    "register": "Create account",
+    "switchToRegister": "Need an account? Create one",
+    "switchToLogin": "Already have an account? Log in"
+  },
+  "dashboard": {
+    "eyebrow": "Your account",
+    "title": "Your stays and saved details",
+    "description": "Keep track of your booking requests and revisit house details anytime.",
+    "history": "Booking history",
+    "empty": "You do not have any bookings yet.",
+    "signOut": "Log out"
+  }
+}
