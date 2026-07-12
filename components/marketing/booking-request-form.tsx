@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { CalendarRange, MailCheck, Sparkles, Users } from "lucide-react";
 import type { Session } from "next-auth";
 import type { Locale } from "@/config/site";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,10 @@ type BookingRequestFormProps = {
     submit: string;
     successTitle: string;
     successDescription: string;
+    estimateLabel?: string;
+    responseTime?: string;
+    guestFlex?: string;
+    privacy?: string;
   };
 };
 
@@ -114,16 +119,36 @@ export function BookingRequestForm({
   };
 
   return (
-    <form onSubmit={onSubmit} className="surface-card rounded-[28px] p-5 sm:p-6">
-      <div className="mb-4 flex items-end justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[rgb(var(--muted-foreground))]">
-            Estimated from
-          </p>
-          <p className="display-font text-3xl font-medium">{estimate}</p>
+    <form onSubmit={onSubmit} className="surface-card rounded-[32px] p-5 sm:p-6">
+      <div className="surface-dark overflow-hidden rounded-[26px] p-5 text-white shadow-[0_24px_54px_rgba(17,14,14,0.22)]">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">
+              {copy.estimateLabel ?? "Estimated stay"}
+            </p>
+            <p className="display-font mt-2 text-[2.35rem] font-medium leading-none">{estimate}</p>
+          </div>
+          <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-white/10 text-white/88">
+            <Sparkles className="h-4 w-4" />
+          </div>
+        </div>
+        <div className="mt-5 grid gap-2.5">
+          <div className="flex items-center gap-3 rounded-[20px] border border-white/8 bg-white/8 px-4 py-3 text-sm text-white/76">
+            <CalendarRange className="h-4 w-4 text-[rgb(var(--accent))]" />
+            <span>{copy.responseTime ?? "Availability reviewed by the Aygoot team within a day."}</span>
+          </div>
+          <div className="flex items-center gap-3 rounded-[20px] border border-white/8 bg-white/8 px-4 py-3 text-sm text-white/76">
+            <Users className="h-4 w-4 text-[rgb(var(--accent))]" />
+            <span>{copy.guestFlex ?? "Book as a guest or with your Aygoot account."}</span>
+          </div>
+          <div className="flex items-center gap-3 rounded-[20px] border border-white/8 bg-white/8 px-4 py-3 text-sm text-white/76">
+            <MailCheck className="h-4 w-4 text-[rgb(var(--accent))]" />
+            <span>{copy.privacy ?? "Confirmation and follow-up arrive clearly by email."}</span>
+          </div>
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor="checkIn" requiredIndicator>{copy.checkIn}</Label>
           <Input id="checkIn" type="date" value={form.checkIn} onChange={updateField("checkIn")} required />

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { auth } from "@/auth";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/config/site";
@@ -95,7 +96,15 @@ export default async function AccountPage({
               <div key={booking.id} className="surface-card rounded-[28px] p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div className="flex items-center gap-4">
-                    <img src={booking.house.image} alt={booking.house.name} className="h-20 w-24 rounded-[18px] object-cover" />
+                    <div className="relative h-20 w-24 overflow-hidden rounded-[18px]">
+                      <Image
+                        src={booking.house.image}
+                        alt={booking.house.name}
+                        fill
+                        sizes="96px"
+                        className="object-cover"
+                      />
+                    </div>
                     <div>
                       <Link href={`/houses/${booking.house.slug}`} locale={locale} className="display-font text-2xl font-medium">
                         {booking.house.name}

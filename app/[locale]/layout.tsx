@@ -31,7 +31,9 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <div className="min-h-screen">
         <SiteHeader locale={locale} />
-        <main className="container-shell py-8 sm:py-10">{children}</main>
+        <main className="container-shell pt-24 pb-6 sm:pt-28 sm:pb-8">
+          {children}
+        </main>
         <SiteFooter locale={locale} />
       </div>
     </NextIntlClientProvider>

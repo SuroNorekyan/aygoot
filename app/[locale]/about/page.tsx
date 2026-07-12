@@ -26,10 +26,8 @@ export default async function AboutPage({
   return (
     <div className="space-y-10 pb-10">
       <Reveal className="surface-card rounded-[34px] p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[rgb(var(--muted-foreground))]">
-          {t("hero.eyebrow")}
-        </p>
-        <h1 className="display-font mt-3 text-5xl font-medium">{t("hero.title")}</h1>
+        <p className="section-kicker">{t("hero.eyebrow")}</p>
+        <h1 className="section-title mt-4 text-5xl sm:text-[4.2rem]">{t("hero.title")}</h1>
         <p className="mt-4 max-w-3xl text-base leading-8 text-[rgb(var(--muted-foreground))]">
           {t("hero.description")}
         </p>

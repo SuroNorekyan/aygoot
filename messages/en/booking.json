@@ -7,7 +7,11 @@
     "email": "Email",
     "phone": "Phone",
     "notes": "Notes",
-    "submit": "Send booking request"
+    "submit": "Send booking request",
+    "estimate": "Estimated stay",
+    "responseTime": "Availability reviewed by the Aygoot team within a day.",
+    "guestFlex": "Book as a guest or with your Aygoot account.",
+    "privacy": "Confirmation and follow-up arrive clearly by email."
   },
   "success": {
     "title": "Booking request sent",

@@ -40,7 +40,7 @@ export async function getUserBookings(userId: string, locale: Locale) {
       house: {
         slug: booking.house.slug,
         name: translation?.name ?? booking.house.slug,
-        image: booking.house.images[0]?.url ?? "/images/placeholder-house.svg",
+        image: booking.house.images[0]?.url ?? "/images/houses/1.webp",
       },
     };
   });

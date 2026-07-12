@@ -38,7 +38,8 @@ export async function getFeaturedHouses(locale: Locale) {
 
   return houses.map((house) => {
     const translation = pickTranslation(house.translations, locale);
-    const coverImage = house.images.find((image) => image.isCover) ?? house.images[0];
+    const coverImage =
+      house.images.find((image) => image.isCover) ?? house.images[0];
 
     return {
       id: house.id,
@@ -51,11 +52,12 @@ export async function getFeaturedHouses(locale: Locale) {
       guestCapacity: house.guestCapacity,
       bedrooms: house.bedrooms,
       bathrooms: house.bathrooms,
-      image: coverImage?.url ?? "/images/placeholder-house.svg",
+      image: coverImage?.url ?? "/images/houses/1.webp",
       imageAlt: coverImage?.alt ?? translation?.name ?? house.slug,
       amenities: house.houseAmenities.map((item) => ({
         slug: item.amenity.slug,
         label: item.amenity.label,
+        icon: item.amenity.icon,
       })),
     };
   });
@@ -65,12 +67,17 @@ export async function getPublishedHouses(locale: Locale) {
   const houses = await prisma.house.findMany({
     where: { status: HouseStatus.PUBLISHED },
     include: houseInclude,
-    orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
+    orderBy: [
+      { featured: "desc" },
+      { sortOrder: "asc" },
+      { createdAt: "desc" },
+    ],
   });
 
   return houses.map((house) => {
     const translation = pickTranslation(house.translations, locale);
-    const coverImage = house.images.find((image) => image.isCover) ?? house.images[0];
+    const coverImage =
+      house.images.find((image) => image.isCover) ?? house.images[0];
 
     return {
       id: house.id,
@@ -85,11 +92,12 @@ export async function getPublishedHouses(locale: Locale) {
       guestCapacity: house.guestCapacity,
       bedrooms: house.bedrooms,
       bathrooms: house.bathrooms,
-      image: coverImage?.url ?? "/images/placeholder-house.svg",
+      image: coverImage?.url ?? "/images/houses/1.webp",
       imageAlt: coverImage?.alt ?? translation?.name ?? house.slug,
       amenities: house.houseAmenities.map((item) => ({
         slug: item.amenity.slug,
         label: item.amenity.label,
+        icon: item.amenity.icon,
       })),
     };
   });

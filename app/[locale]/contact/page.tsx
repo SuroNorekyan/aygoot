@@ -1,3 +1,4 @@
+import { Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/config/site";
 import { siteConfig } from "@/config/site";
@@ -25,18 +26,43 @@ export default async function ContactPage({
 
   return (
     <div className="grid gap-6 pb-10 lg:grid-cols-[0.92fr_1.08fr]">
-      <Reveal className="surface-card rounded-[34px] p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[rgb(var(--muted-foreground))]">
-          {t("hero.eyebrow")}
-        </p>
-        <h1 className="display-font mt-3 text-5xl font-medium">{t("hero.title")}</h1>
-        <p className="mt-4 text-base leading-8 text-[rgb(var(--muted-foreground))]">
-          {t("hero.description")}
-        </p>
-        <div className="mt-8 space-y-4 rounded-[28px] bg-white/70 p-5 text-sm">
-          <p>{siteConfig.contact.address}</p>
-          <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>
-          <a href={`tel:${siteConfig.contact.phone}`}>{siteConfig.contact.phone}</a>
+      <Reveal className="surface-dark rounded-[34px] p-8 text-white">
+        <p className="section-kicker !text-white/54">{t("hero.eyebrow")}</p>
+        <h1 className="section-title mt-4 text-5xl text-white sm:text-[4rem]">{t("hero.title")}</h1>
+        <p className="mt-5 text-base leading-8 text-white/72">{t("hero.description")}</p>
+        <div className="mt-8 space-y-3">
+          <a
+            href={`https://maps.google.com/?q=${encodeURIComponent(siteConfig.contact.address)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-start gap-3 rounded-[24px] border border-white/8 bg-white/8 px-5 py-4 text-sm text-white/74"
+          >
+            <MapPin className="mt-0.5 h-4 w-4 text-[rgb(var(--accent))]" />
+            <span>{siteConfig.contact.address}</span>
+          </a>
+          <a
+            href={`mailto:${siteConfig.contact.email}`}
+            className="flex items-center gap-3 rounded-[24px] border border-white/8 bg-white/8 px-5 py-4 text-sm text-white/74"
+          >
+            <Mail className="h-4 w-4 text-[rgb(var(--accent))]" />
+            <span>{siteConfig.contact.email}</span>
+          </a>
+          <a
+            href={`tel:${siteConfig.contact.phone}`}
+            className="flex items-center gap-3 rounded-[24px] border border-white/8 bg-white/8 px-5 py-4 text-sm text-white/74"
+          >
+            <Phone className="h-4 w-4 text-[rgb(var(--accent))]" />
+            <span>{siteConfig.contact.phone}</span>
+          </a>
+          <a
+            href={siteConfig.social.instagram}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 rounded-[24px] border border-white/8 bg-white/8 px-5 py-4 text-sm text-white/74"
+          >
+            <Instagram className="h-4 w-4 text-[rgb(var(--accent))]" />
+            <span>@aygoot</span>
+          </a>
         </div>
       </Reveal>
       <Reveal delay={0.08} className="surface-card rounded-[34px] p-8">

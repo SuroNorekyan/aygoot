@@ -33,6 +33,31 @@ export const localeLabels: Record<Locale, string> = {
   ru: "Русский",
 };
 
+export const localeMeta: Record<
+  Locale,
+  {
+    label: string;
+    shortLabel: string;
+    flag: string;
+  }
+> = {
+  en: {
+    label: "English",
+    shortLabel: "EN",
+    flag: "🇺🇸",
+  },
+  hy: {
+    label: "Հայերեն",
+    shortLabel: "HY",
+    flag: "🇦🇲",
+  },
+  ru: {
+    label: "Русский",
+    shortLabel: "RU",
+    flag: "🇷🇺",
+  },
+};
+
 export const isLocale = (value: string): value is Locale =>
   locales.includes(value as Locale);
 
