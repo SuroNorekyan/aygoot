@@ -30,13 +30,15 @@ export default async function HousesPage({
   const copy = await getTranslations({ locale, namespace: "houses" });
   const common = await getTranslations({ locale, namespace: "common" });
   const houses = await getPublishedHouses(locale);
+  const heroHouse = houses[0];
 
   return (
     <div className="space-y-12 pb-12">
+      {heroHouse?.image ? (
       <Reveal className="relative overflow-hidden rounded-[38px] border border-[rgba(var(--border-soft),0.16)] shadow-[0_26px_78px_rgba(37,28,21,0.14)]">
         <Image
-          src={houses[0]?.image ?? "/images/houses/1.webp"}
-          alt={houses[0]?.imageAlt ?? "Aygoot houses"}
+          src={heroHouse.image}
+          alt={heroHouse.imageAlt}
           fill
           sizes="100vw"
           className="object-cover"
@@ -59,6 +61,7 @@ export default async function HousesPage({
           </div>
         </div>
       </Reveal>
+      ) : null}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-2xl text-sm leading-8 text-[rgb(var(--muted-foreground))]">

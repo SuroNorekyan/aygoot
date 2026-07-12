@@ -30,11 +30,15 @@ export default async function AdminHousesPage() {
           <div key={house.id} className="surface-card rounded-[28px] p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center gap-4">
-                <img
-                  src={house.images[0]?.url ?? "/images/houses/1.webp"}
-                  alt={house.translations[0]?.name ?? house.slug}
-                  className="h-20 w-24 rounded-[18px] object-cover"
-                />
+                {house.images[0]?.url ? (
+                  <img
+                    src={house.images[0].url}
+                    alt={house.translations[0]?.name ?? house.slug}
+                    className="h-20 w-24 rounded-[18px] object-cover"
+                  />
+                ) : (
+                  <div className="h-20 w-24 rounded-[18px] bg-[rgba(var(--forest),0.12)]" />
+                )}
                 <div>
                   <p className="display-font text-3xl font-medium">{house.translations[0]?.name ?? house.slug}</p>
                   <p className="text-sm text-[rgb(var(--muted-foreground))]">/{house.slug}</p>

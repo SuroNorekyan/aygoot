@@ -17,6 +17,12 @@ enum HouseStatus {
   PUBLISHED
 }
 
+enum HouseType {
+  BIG
+  SMALL
+  STANDARD
+}
+
 enum BookingStatus {
   PENDING
   CONFIRMED
@@ -88,11 +94,14 @@ model House {
   id               String              @id @default(cuid())
   slug             String              @unique
   status           HouseStatus         @default(DRAFT)
+  type             HouseType           @default(STANDARD)
   featured         Boolean             @default(false)
   pricePerNightAmd Int
+  priceWorkdaysAmd Int
+  priceWeekdaysAmd Int
   guestCapacity    Int
-  bedrooms         Int
-  bathrooms        Int
+  bedrooms         Int?
+  bathrooms        Int?
   latitude         Float?
   longitude        Float?
   sortOrder        Int                 @default(0)
@@ -113,7 +122,7 @@ model HouseTranslation {
   name             String
   shortDescription String @db.Text
   description      String @db.Text
-  locationLabel    String
+  locationLabel    String?
   nearbyLabel      String?
 
   house House @relation(fields: [houseId], references: [id], onDelete: Cascade)

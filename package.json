@@ -12,8 +12,10 @@
     "check": "pnpm prisma validate && pnpm typecheck && pnpm build",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "blob:upload-cottages": "tsx scripts/upload-cottage-images-to-blob.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

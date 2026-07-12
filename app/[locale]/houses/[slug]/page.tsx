@@ -48,6 +48,31 @@ export default async function HouseDetailPage({
     notFound();
   }
 
+  const facts = [
+    {
+      key: "guests",
+      label: copy("card.guests"),
+      value: house.guestCapacity,
+      Icon: Users,
+    },
+    house.bedrooms
+      ? {
+          key: "bedrooms",
+          label: copy("card.bedrooms"),
+          value: house.bedrooms,
+          Icon: BedDouble,
+        }
+      : null,
+    house.bathrooms
+      ? {
+          key: "bathrooms",
+          label: copy("card.bathrooms"),
+          value: house.bathrooms,
+          Icon: Bath,
+        }
+      : null,
+  ].filter((fact): fact is NonNullable<typeof fact> => Boolean(fact));
+
   return (
     <div className="space-y-10 pb-12 sm:space-y-12">
       <section className="grid gap-7 xl:grid-cols-[1.08fr_0.92fr]">
@@ -55,43 +80,29 @@ export default async function HouseDetailPage({
           <div className="surface-card rounded-[34px] p-6 sm:p-8">
             <div className="flex flex-wrap items-center gap-3">
               {house.featured ? <Badge variant="accent">{copy("card.featured")}</Badge> : null}
-              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[rgb(var(--muted-foreground))]">
-                <MapPin className="h-4 w-4 text-[rgb(var(--forest))]" />
-                {house.locationLabel}
-              </span>
+              {house.locationLabel ? (
+                <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[rgb(var(--muted-foreground))]">
+                  <MapPin className="h-4 w-4 text-[rgb(var(--forest))]" />
+                  {house.locationLabel}
+                </span>
+              ) : null}
             </div>
             <h1 className="section-title mt-5 text-5xl sm:text-[4.4rem]">{house.name}</h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-[rgb(var(--muted-foreground))]">
               {house.shortDescription}
             </p>
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
-              <div className="surface-panel rounded-[24px] px-4 py-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[rgb(var(--muted-foreground))]">
-                  {copy("card.guests")}
-                </p>
-                <p className="mt-3 inline-flex items-center gap-2 text-base font-semibold">
-                  <Users className="h-4 w-4 text-[rgb(var(--forest))]" />
-                  {house.guestCapacity}
-                </p>
-              </div>
-              <div className="surface-panel rounded-[24px] px-4 py-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[rgb(var(--muted-foreground))]">
-                  {copy("card.bedrooms")}
-                </p>
-                <p className="mt-3 inline-flex items-center gap-2 text-base font-semibold">
-                  <BedDouble className="h-4 w-4 text-[rgb(var(--forest))]" />
-                  {house.bedrooms}
-                </p>
-              </div>
-              <div className="surface-panel rounded-[24px] px-4 py-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[rgb(var(--muted-foreground))]">
-                  {copy("card.bathrooms")}
-                </p>
-                <p className="mt-3 inline-flex items-center gap-2 text-base font-semibold">
-                  <Bath className="h-4 w-4 text-[rgb(var(--forest))]" />
-                  {house.bathrooms}
-                </p>
-              </div>
+            <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {facts.map(({ key, label, value, Icon }) => (
+                <div key={key} className="surface-panel rounded-[24px] px-4 py-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[rgb(var(--muted-foreground))]">
+                    {label}
+                  </p>
+                  <p className="mt-3 inline-flex items-center gap-2 text-base font-semibold">
+                    <Icon className="h-4 w-4 text-[rgb(var(--forest))]" />
+                    {value}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -106,6 +117,24 @@ export default async function HouseDetailPage({
             <p className="display-font mt-3 text-[3.5rem] font-medium leading-none">
               {formatCurrencyAmd(locale, house.pricePerNightAmd)}
             </p>
+            <div className="mt-5 grid gap-2 text-sm text-white/74 sm:grid-cols-2">
+              <div className="rounded-[18px] border border-white/8 bg-white/8 px-4 py-3">
+                <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/52">
+                  {copy("detail.workdays")}
+                </span>
+                <span className="mt-1 block font-semibold text-white">
+                  {formatCurrencyAmd(locale, house.priceWorkdaysAmd)}
+                </span>
+              </div>
+              <div className="rounded-[18px] border border-white/8 bg-white/8 px-4 py-3">
+                <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/52">
+                  {copy("detail.weekdays")}
+                </span>
+                <span className="mt-1 block font-semibold text-white">
+                  {formatCurrencyAmd(locale, house.priceWeekdaysAmd)}
+                </span>
+              </div>
+            </div>
             <div className="mt-6 space-y-3">
               <div className="flex items-center gap-3 rounded-[22px] border border-white/8 bg-white/8 px-4 py-3 text-sm text-white/74">
                 <ShieldCheck className="h-4 w-4 text-[rgb(var(--accent))]" />
@@ -149,48 +178,54 @@ export default async function HouseDetailPage({
             {house.description}
           </p>
         </Reveal>
-        <Reveal delay={0.08} className="surface-card rounded-[32px] p-6 sm:p-8">
-          <p className="section-kicker">{copy("detail.nearby")}</p>
-          <p className="mt-5 text-base leading-8 text-[rgb(var(--muted-foreground))]">
-            {house.nearbyLabel}
-          </p>
-          {house.latitude && house.longitude ? (
-            <div className="mt-6 rounded-[24px] bg-[rgba(var(--forest),0.08)] px-5 py-4 text-sm text-[rgb(var(--muted-foreground))]">
-              {copy("detail.location")}: {house.latitude.toFixed(4)}, {house.longitude.toFixed(4)}
-            </div>
-          ) : null}
-        </Reveal>
+        {house.nearbyLabel || (house.latitude && house.longitude) ? (
+          <Reveal delay={0.08} className="surface-card rounded-[32px] p-6 sm:p-8">
+            <p className="section-kicker">{copy("detail.nearby")}</p>
+            {house.nearbyLabel ? (
+              <p className="mt-5 text-base leading-8 text-[rgb(var(--muted-foreground))]">
+                {house.nearbyLabel}
+              </p>
+            ) : null}
+            {house.latitude && house.longitude ? (
+              <div className="mt-6 rounded-[24px] bg-[rgba(var(--forest),0.08)] px-5 py-4 text-sm text-[rgb(var(--muted-foreground))]">
+                {copy("detail.location")}: {house.latitude.toFixed(4)}, {house.longitude.toFixed(4)}
+              </div>
+            ) : null}
+          </Reveal>
+        ) : null}
       </section>
 
-      <Reveal className="surface-card rounded-[32px] p-6 sm:p-8">
-        <div className="flex items-center gap-3">
+      {house.amenities.length ? (
+        <Reveal className="surface-card rounded-[32px] p-6 sm:p-8">
+          <div className="flex items-center gap-3">
             <div className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(var(--forest),0.1)] text-[rgb(var(--forest))]">
-            <TreePine className="h-5 w-5" />
+              <TreePine className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="section-kicker">{copy("detail.amenities")}</p>
+              <h2 className="display-font mt-2 text-3xl font-medium">{copy("detail.amenitiesTitle")}</h2>
+            </div>
           </div>
-          <div>
-            <p className="section-kicker">{copy("detail.amenities")}</p>
-            <h2 className="display-font mt-2 text-3xl font-medium">{copy("detail.amenitiesTitle")}</h2>
-          </div>
-        </div>
-        <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {house.amenities.map((amenity) => {
-            const Icon = getAmenityIcon(amenity.icon);
-            return (
-              <div
-                key={amenity.slug}
-                className="surface-panel rounded-[24px] px-4 py-4"
-              >
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(var(--accent),0.14)] text-[rgb(var(--secondary))]">
-                  <Icon className="h-4 w-4" />
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {house.amenities.map((amenity) => {
+              const Icon = getAmenityIcon(amenity.icon);
+              return (
+                <div
+                  key={amenity.slug}
+                  className="surface-panel rounded-[24px] px-4 py-4"
+                >
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(var(--accent),0.14)] text-[rgb(var(--secondary))]">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold text-[rgb(var(--foreground))]">
+                    {amenity.label}
+                  </p>
                 </div>
-                <p className="mt-4 text-sm font-semibold text-[rgb(var(--foreground))]">
-                  {amenity.label}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </Reveal>
+              );
+            })}
+          </div>
+        </Reveal>
+      ) : null}
     </div>
   );
 }

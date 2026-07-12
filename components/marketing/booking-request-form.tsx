@@ -10,12 +10,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { formatCurrencyAmd } from "@/lib/utils/format";
+import { calculateStayTotalAmd } from "@/lib/utils/pricing";
 
 type BookingRequestFormProps = {
   locale: Locale;
   house: {
     id: string;
     pricePerNightAmd: number;
+    priceWorkdaysAmd: number;
+    priceWeekdaysAmd: number;
   };
   session: Session | null;
   copy: {
@@ -62,17 +65,15 @@ export function BookingRequestForm({
 
   const estimate = (() => {
     if (!form.checkIn || !form.checkOut) return formatCurrencyAmd(locale, house.pricePerNightAmd);
-    const nights =
-      Math.max(
-        1,
-        Math.round(
-          (new Date(`${form.checkOut}T00:00:00Z`).getTime() -
-            new Date(`${form.checkIn}T00:00:00Z`).getTime()) /
-            (1000 * 60 * 60 * 24),
-        ),
-      ) || 1;
 
-    return formatCurrencyAmd(locale, nights * house.pricePerNightAmd);
+    return formatCurrencyAmd(
+      locale,
+      calculateStayTotalAmd(
+        new Date(`${form.checkIn}T00:00:00Z`),
+        new Date(`${form.checkOut}T00:00:00Z`),
+        house,
+      ),
+    );
   })();
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -126,7 +127,12 @@ export function BookingRequestForm({
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">
               {copy.estimateLabel ?? "Estimated stay"}
             </p>
-            <p className="display-font mt-2 text-[2.35rem] font-medium leading-none">{estimate}</p>
+            <p
+              className="display-font mt-2 text-[2.35rem] font-medium leading-none"
+              suppressHydrationWarning
+            >
+              {estimate}
+            </p>
           </div>
           <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-white/10 text-white/88">
             <Sparkles className="h-4 w-4" />

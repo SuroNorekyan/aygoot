@@ -23,11 +23,14 @@ type AdminHouseFormProps = {
     id: string;
     slug: string;
     status: "DRAFT" | "PUBLISHED";
+    type: "BIG" | "SMALL" | "STANDARD";
     featured: boolean;
     pricePerNightAmd: number;
+    priceWorkdaysAmd: number;
+    priceWeekdaysAmd: number;
     guestCapacity: number;
-    bedrooms: number;
-    bathrooms: number;
+    bedrooms: number | null;
+    bathrooms: number | null;
     latitude: number | null;
     longitude: number | null;
     amenities: string[];
@@ -46,11 +49,14 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
   const [form, setForm] = useState({
     slug: house?.slug ?? "",
     status: house?.status ?? "DRAFT",
+    type: house?.type ?? "STANDARD",
     featured: house?.featured ?? false,
     pricePerNightAmd: String(house?.pricePerNightAmd ?? 85000),
+    priceWorkdaysAmd: String(house?.priceWorkdaysAmd ?? house?.pricePerNightAmd ?? 85000),
+    priceWeekdaysAmd: String(house?.priceWeekdaysAmd ?? house?.pricePerNightAmd ?? 85000),
     guestCapacity: String(house?.guestCapacity ?? 4),
-    bedrooms: String(house?.bedrooms ?? 2),
-    bathrooms: String(house?.bathrooms ?? 1),
+    bedrooms: house?.bedrooms?.toString() ?? "",
+    bathrooms: house?.bathrooms?.toString() ?? "",
     latitude: house?.latitude?.toString() ?? "",
     longitude: house?.longitude?.toString() ?? "",
     amenityIds: house?.amenities ?? [],
@@ -102,11 +108,14 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
       const payload = {
         slug: form.slug,
         status: form.status,
+        type: form.type,
         featured: form.featured,
         pricePerNightAmd: Number(form.pricePerNightAmd),
+        priceWorkdaysAmd: Number(form.priceWorkdaysAmd),
+        priceWeekdaysAmd: Number(form.priceWeekdaysAmd),
         guestCapacity: Number(form.guestCapacity),
-        bedrooms: Number(form.bedrooms),
-        bathrooms: Number(form.bathrooms),
+        bedrooms: form.bedrooms ? Number(form.bedrooms) : null,
+        bathrooms: form.bathrooms ? Number(form.bathrooms) : null,
         latitude: form.latitude ? Number(form.latitude) : null,
         longitude: form.longitude ? Number(form.longitude) : null,
         amenityIds: form.amenityIds,
@@ -169,20 +178,41 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
             </select>
           </div>
           <div>
+            <Label htmlFor="type" requiredIndicator>Cottage type</Label>
+            <select
+              id="type"
+              className="h-12 w-full rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
+              value={form.type}
+              onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value as "BIG" | "SMALL" | "STANDARD" }))}
+            >
+              <option value="BIG">Big</option>
+              <option value="SMALL">Small</option>
+              <option value="STANDARD">Standard</option>
+            </select>
+          </div>
+          <div>
             <Label htmlFor="price" requiredIndicator>Price per night (AMD)</Label>
             <Input id="price" type="number" value={form.pricePerNightAmd} onChange={(event) => setForm((prev) => ({ ...prev, pricePerNightAmd: event.target.value }))} required />
+          </div>
+          <div>
+            <Label htmlFor="priceWorkdays" requiredIndicator>Price Workdays (AMD)</Label>
+            <Input id="priceWorkdays" type="number" value={form.priceWorkdaysAmd} onChange={(event) => setForm((prev) => ({ ...prev, priceWorkdaysAmd: event.target.value }))} required />
+          </div>
+          <div>
+            <Label htmlFor="priceWeekdays" requiredIndicator>Price Weekdays (AMD)</Label>
+            <Input id="priceWeekdays" type="number" value={form.priceWeekdaysAmd} onChange={(event) => setForm((prev) => ({ ...prev, priceWeekdaysAmd: event.target.value }))} required />
           </div>
           <div>
             <Label htmlFor="capacity" requiredIndicator>Guest capacity</Label>
             <Input id="capacity" type="number" value={form.guestCapacity} onChange={(event) => setForm((prev) => ({ ...prev, guestCapacity: event.target.value }))} required />
           </div>
           <div>
-            <Label htmlFor="bedrooms" requiredIndicator>Bedrooms</Label>
-            <Input id="bedrooms" type="number" value={form.bedrooms} onChange={(event) => setForm((prev) => ({ ...prev, bedrooms: event.target.value }))} required />
+            <Label htmlFor="bedrooms">Bedrooms</Label>
+            <Input id="bedrooms" type="number" value={form.bedrooms} onChange={(event) => setForm((prev) => ({ ...prev, bedrooms: event.target.value }))} />
           </div>
           <div>
-            <Label htmlFor="bathrooms" requiredIndicator>Bathrooms</Label>
-            <Input id="bathrooms" type="number" value={form.bathrooms} onChange={(event) => setForm((prev) => ({ ...prev, bathrooms: event.target.value }))} required />
+            <Label htmlFor="bathrooms">Bathrooms</Label>
+            <Input id="bathrooms" type="number" value={form.bathrooms} onChange={(event) => setForm((prev) => ({ ...prev, bathrooms: event.target.value }))} />
           </div>
           <div>
             <Label htmlFor="latitude">Latitude</Label>
@@ -264,12 +294,11 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
               />
             </div>
             <div>
-              <Label htmlFor={`${translation.locale}-location`} requiredIndicator>Location label</Label>
+              <Label htmlFor={`${translation.locale}-location`}>Location label</Label>
               <Input
                 id={`${translation.locale}-location`}
                 value={translation.locationLabel}
                 onChange={updateTranslation(translation.locale, "locationLabel")}
-                required
               />
             </div>
             <div>

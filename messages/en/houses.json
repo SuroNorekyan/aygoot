@@ -17,6 +17,8 @@
   },
   "detail": {
     "perNight": "per night",
+    "workdays": "Workdays",
+    "weekdays": "Weekdays",
     "amenities": "Amenities",
     "amenitiesTitle": "Comforts inside the house",
     "aboutHouse": "About this house",

@@ -2,6 +2,8 @@ import type { LucideIcon } from "lucide-react";
 import {
   CarFront,
   Coffee,
+  Film,
+  Flag,
   Flame,
   PawPrint,
   Sparkles,
@@ -19,7 +21,10 @@ const amenityIcons: Record<string, LucideIcon> = {
   car: CarFront,
   utensils: UtensilsCrossed,
   coffee: Coffee,
+  film: Film,
+  flag: Flag,
   "paw-print": PawPrint,
+  sparkles: Sparkles,
 };
 
 export function getAmenityIcon(icon?: string | null) {

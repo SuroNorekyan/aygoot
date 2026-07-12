@@ -10,6 +10,20 @@ export function AdminMediaUploader() {
   const [isPending, startTransition] = useTransition();
   const [uploaded, setUploaded] = useState<Array<{ url: string; pathname: string }>>([]);
 
+  const sanitizeFileName = (name: string) => {
+    const extension = name.includes(".") ? `.${name.split(".").pop()}` : "";
+    const stem = name.slice(0, extension ? -extension.length : undefined);
+    const safeStem =
+      stem
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "image";
+    const safeExtension = extension.toLowerCase().replace(/[^a-z0-9.]/g, "");
+    return `${safeStem}${safeExtension}`;
+  };
+
   const onFileChange = (files: FileList | null) => {
     if (!files?.length) return;
 
@@ -17,7 +31,7 @@ export function AdminMediaUploader() {
       try {
         const results = [];
         for (const file of Array.from(files)) {
-          const pathname = `houses/${Date.now()}-${file.name}`;
+          const pathname = `houses/admin-uploads/${crypto.randomUUID()}-${sanitizeFileName(file.name)}`;
           const prepare = await fetch("/api/uploads/client", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

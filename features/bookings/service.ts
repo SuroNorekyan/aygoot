@@ -1,7 +1,8 @@
 import { BookingStatus } from "@prisma/client";
 import type { Session } from "next-auth";
 import { prisma } from "@/lib/db/prisma";
-import { parseDateOnly, nightsBetween, rangesOverlap } from "@/lib/utils/dates";
+import { parseDateOnly, rangesOverlap } from "@/lib/utils/dates";
+import { calculateStayTotalAmd } from "@/lib/utils/pricing";
 import { sendBookingConfirmationEmail, sendBookingRejectedEmail, sendBookingRequestEmails } from "@/lib/email/booking-notifications";
 import type { Locale } from "@/config/site";
 import { bookingSchema } from "./validation";
@@ -40,7 +41,7 @@ export async function getUserBookings(userId: string, locale: Locale) {
       house: {
         slug: booking.house.slug,
         name: translation?.name ?? booking.house.slug,
-        image: booking.house.images[0]?.url ?? "/images/houses/1.webp",
+        image: booking.house.images[0]?.url ?? null,
       },
     };
   });
@@ -147,7 +148,7 @@ export async function createBookingRequest(input: unknown, session: Session | nu
     };
   }
 
-  const totalPriceAmd = house.pricePerNightAmd * nightsBetween(checkIn, checkOut);
+  const totalPriceAmd = calculateStayTotalAmd(checkIn, checkOut, house);
   const booking = await prisma.booking.create({
     data: {
       houseId: house.id,

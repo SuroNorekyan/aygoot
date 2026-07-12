@@ -45,6 +45,8 @@ export default async function HomePage({
   const housesCopy = await getTranslations({ locale, namespace: "houses" });
   const featuredHouses = await getFeaturedHouses(locale);
   const allHouses = await getPublishedHouses(locale);
+  const experienceHouse = allHouses[3] ?? allHouses[0];
+  const ctaHouse = allHouses[4] ?? allHouses[allHouses.length - 1];
   const trustItems = home.raw("trust.items") as Array<{
     title: string;
     description: string;
@@ -157,11 +159,12 @@ export default async function HomePage({
         </div>
       </section>
 
+      {experienceHouse?.image ? (
       <section className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
         <Reveal className="relative overflow-hidden rounded-[38px] border border-[rgba(var(--border-soft),0.14)] shadow-[0_26px_72px_rgba(37,28,21,0.16)]">
           <Image
-            src={allHouses[3]?.image ?? "/images/houses/4.jpg"}
-            alt={allHouses[3]?.imageAlt ?? "Dilijan forest house"}
+            src={experienceHouse.image}
+            alt={experienceHouse.imageAlt}
             fill
             sizes="(max-width: 1280px) 100vw, 55vw"
             className="object-cover"
@@ -230,6 +233,7 @@ export default async function HomePage({
           })}
         </div> */}
       </section>
+      ) : null}
 
       <Reveal className="space-y-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -295,10 +299,11 @@ export default async function HomePage({
             </div>
           </div>
 
+          {ctaHouse?.image ? (
           <div className="relative min-h-[320px] overflow-hidden rounded-[32px]">
             <Image
-              src={allHouses[5]?.image ?? "/images/houses/6.jpeg"}
-              alt={allHouses[5]?.imageAlt ?? "Aygoot house exterior"}
+              src={ctaHouse.image}
+              alt={ctaHouse.imageAlt}
               fill
               sizes="(max-width: 1280px) 100vw, 52vw"
               className="object-cover"
@@ -309,13 +314,14 @@ export default async function HomePage({
                 {home("cta.cardEyebrow")}
               </p>
               <p className="display-font mt-3 text-[2rem] font-medium leading-[1.02]">
-                {allHouses[5]?.name ?? "Forest-lined private stays"}
+                {ctaHouse.name}
               </p>
               <p className="mt-3 max-w-md text-sm leading-7 text-white/74">
                 {home("cta.cardBody")}
               </p>
             </div>
           </div>
+          ) : null}
         </div>
       </Reveal>
     </div>

@@ -17,6 +17,8 @@
   },
   "detail": {
     "perNight": "за ночь",
+    "workdays": "Будни",
+    "weekdays": "Выходные",
     "amenities": "Удобства",
     "amenitiesTitle": "Комфорт внутри дома",
     "aboutHouse": "О доме",

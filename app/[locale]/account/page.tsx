@@ -96,15 +96,17 @@ export default async function AccountPage({
               <div key={booking.id} className="surface-card rounded-[28px] p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="relative h-20 w-24 overflow-hidden rounded-[18px]">
-                      <Image
-                        src={booking.house.image}
-                        alt={booking.house.name}
-                        fill
-                        sizes="96px"
-                        className="object-cover"
-                      />
-                    </div>
+                    {booking.house.image ? (
+                      <div className="relative h-20 w-24 overflow-hidden rounded-[18px]">
+                        <Image
+                          src={booking.house.image}
+                          alt={booking.house.name}
+                          fill
+                          sizes="96px"
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : null}
                     <div>
                       <Link href={`/houses/${booking.house.slug}`} locale={locale} className="display-font text-2xl font-medium">
                         {booking.house.name}
