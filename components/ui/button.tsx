@@ -15,22 +15,22 @@ type Size = "default" | "sm" | "lg" | "icon";
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-white text-slate-900 shadow-[0_14px_36px_rgba(0,0,0,0.18)] \
-   hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-[0_22px_44px_rgba(0,0,0,0.24)] \
+    "border border-white/70 bg-[rgba(255,251,245,0.94)] text-[rgb(var(--foreground))] shadow-[0_14px_34px_rgba(37,28,21,0.14),inset_0_1px_0_rgba(255,255,255,0.7)] \
+   hover:bg-white hover:text-[rgb(var(--foreground))] hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(37,28,21,0.16),inset_0_1px_0_rgba(255,255,255,0.82)] \
    active:translate-y-0 transition-all",
   primarySoft:
-    "bg-white/80 text-slate-900 border border-white/30 \
-   shadow-[0_10px_26px_rgba(0,0,0,0.12)] \
-   hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(0,0,0,0.18)] \
+    "border border-[rgba(var(--border-soft),0.22)] bg-[rgba(255,251,245,0.76)] text-[rgb(var(--foreground))] \
+   shadow-[0_10px_26px_rgba(37,28,21,0.08),inset_0_1px_0_rgba(255,255,255,0.66)] \
+   hover:bg-white hover:text-[rgb(var(--foreground))] hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(37,28,21,0.12)] \
    active:translate-y-0 transition-all",
   secondary:
-    "bg-[rgb(var(--accent))] text-[rgb(var(--accent-foreground))] shadow-[0_16px_28px_rgba(131,94,62,0.18)] hover:-translate-y-0.5 hover:brightness-[1.04]",
+    "border border-[rgba(173,128,84,0.26)] bg-[rgba(173,128,84,0.15)] text-[rgb(var(--secondary))] shadow-[0_12px_26px_rgba(131,94,62,0.10)] hover:-translate-y-0.5 hover:bg-[rgba(173,128,84,0.22)] hover:text-[rgb(var(--foreground))]",
   ghost:
-    "bg-transparent text-[rgb(var(--foreground))] hover:bg-[rgba(var(--primary),0.06)]",
+    "bg-transparent text-[rgb(var(--foreground))] hover:bg-white/55 hover:text-[rgb(var(--foreground))]",
   outline:
-    "border border-[rgba(var(--border-soft),0.42)] bg-white/58 text-[rgb(var(--foreground))] shadow-[0_10px_24px_rgba(37,28,21,0.08)] backdrop-blur hover:-translate-y-0.5 hover:bg-white hover:text-[rgb(var(--foreground))]",
+    "border border-[rgba(var(--border-soft),0.28)] bg-[rgba(255,251,245,0.64)] text-[rgb(var(--foreground))] shadow-[0_10px_24px_rgba(37,28,21,0.06),inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur hover:-translate-y-0.5 hover:border-[rgba(var(--border-soft),0.38)] hover:bg-white hover:text-[rgb(var(--foreground))]",
   light:
-    "bg-white/85 text-[rgb(var(--foreground))] shadow-[0_12px_28px_rgba(17,14,14,0.08)] hover:bg-white",
+    "border border-white/60 bg-white/85 text-[rgb(var(--foreground))] shadow-[0_12px_28px_rgba(17,14,14,0.08)] hover:bg-white hover:text-[rgb(var(--foreground))]",
 };
 
 const sizeClasses: Record<Size, string> = {
@@ -63,7 +63,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Component
         ref={ref as never}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-[0.02em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(var(--ring),0.9)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:translate-y-0 disabled:opacity-60",
+          "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold tracking-[0.01em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(var(--ring),0.45)] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface))] disabled:pointer-events-none disabled:translate-y-0 disabled:opacity-60",
           variantClasses[variant],
           sizeClasses[size],
           className,

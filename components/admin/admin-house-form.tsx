@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -290,29 +291,27 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
           </div>
           <div>
             <Label htmlFor="status" requiredIndicator>Status</Label>
-            <select
+            <Select
               id="status"
-              className="h-12 w-full rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
               value={form.status}
               onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value as "DRAFT" | "PUBLISHED" | "ARCHIVED" }))}
             >
               <option value="DRAFT">Draft</option>
               <option value="PUBLISHED">Published</option>
               <option value="ARCHIVED">Archived</option>
-            </select>
+            </Select>
           </div>
           <div>
             <Label htmlFor="type" requiredIndicator>Cottage type</Label>
-            <select
+            <Select
               id="type"
-              className="h-12 w-full rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
               value={form.type}
               onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value as "BIG" | "SMALL" | "STANDARD" }))}
             >
               <option value="BIG">Big</option>
               <option value="SMALL">Small</option>
               <option value="STANDARD">Standard</option>
-            </select>
+            </Select>
           </div>
           <div>
             <Label htmlFor="price" requiredIndicator>Price per night (AMD)</Label>

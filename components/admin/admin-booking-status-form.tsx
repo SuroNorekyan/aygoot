@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -45,16 +46,15 @@ export function AdminBookingStatusForm({
         });
       }}
     >
-      <select
+      <Select
         name="status"
         defaultValue={currentStatus}
-        className="h-12 w-full rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
       >
         <option value="PENDING">Pending</option>
         <option value="CONFIRMED">Confirmed</option>
         <option value="REJECTED">Rejected</option>
         <option value="CANCELLED">Cancelled</option>
-      </select>
+      </Select>
       <Textarea name="adminNotes" defaultValue={adminNotes ?? ""} rows={5} />
       <Button disabled={isPending}>Update booking</Button>
     </form>

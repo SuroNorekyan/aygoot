@@ -10,6 +10,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { LogoutButton } from "@/components/shared/logout-button";
 import { useToast } from "@/components/ui/use-toast";
@@ -213,18 +214,17 @@ export function AccountDashboard({ locale, user, bookings, copy }: AccountDashbo
           </div>
           <div>
             <Label htmlFor="profile-locale">Preferred language</Label>
-            <select
+            <Select
               id="profile-locale"
               value={profile.preferredLocale}
               onChange={(event) => setProfile((prev) => ({ ...prev, preferredLocale: event.target.value as Locale }))}
-              className="h-12 w-full rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
             >
               {locales.map((item) => (
                 <option key={item} value={item}>
                   {localeLabels[item]}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div className="md:col-span-2">
             <Button disabled={isPending}>Save profile</Button>

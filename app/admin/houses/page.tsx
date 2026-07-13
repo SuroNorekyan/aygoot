@@ -3,6 +3,9 @@ import { getHouseOptions } from "@/features/houses/queries";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { formatCurrencyAmd, formatDateTime } from "@/lib/utils/format";
 import { HouseStatusActionButton } from "@/components/admin/house-status-action-button";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
 export const dynamic = "force-dynamic";
 
@@ -30,43 +33,35 @@ export default async function AdminHousesPage({
             {amenityCount} amenities available across the catalogue.
           </p>
         </div>
-        <a
-          href="/admin/houses/new"
-          className="inline-flex items-center rounded-full bg-[rgb(var(--primary))] px-5 py-3 text-sm font-semibold text-[rgb(var(--primary-foreground))]"
-        >
-          New house
-        </a>
+        <Button asChild>
+          <a href="/admin/houses/new">New house</a>
+        </Button>
       </div>
       <form className="surface-card grid gap-4 rounded-[28px] p-5 md:grid-cols-[1fr_180px_180px_auto]">
-        <input
+        <Input
           name="q"
           defaultValue={filters.q ?? ""}
           placeholder="Search name or slug"
-          className="h-12 rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
         />
-        <select
+        <Select
           name="status"
           defaultValue={status}
-          className="h-12 rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
         >
           <option value="all">All statuses</option>
           <option value="PUBLISHED">Published</option>
           <option value="DRAFT">Draft</option>
           <option value="ARCHIVED">Archived</option>
-        </select>
-        <select
+        </Select>
+        <Select
           name="type"
           defaultValue={type}
-          className="h-12 rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
         >
           <option value="all">All types</option>
           <option value="BIG">Big</option>
           <option value="SMALL">Small</option>
           <option value="STANDARD">Standard</option>
-        </select>
-        <button className="rounded-full bg-[rgb(var(--primary))] px-5 py-3 text-sm font-semibold text-[rgb(var(--primary-foreground))]">
-          Filter
-        </button>
+        </Select>
+        <Button type="submit">Filter</Button>
       </form>
       <div className="grid gap-4">
         {houses.map((house) => (
@@ -96,12 +91,9 @@ export default async function AdminHousesPage({
                 <span className="text-sm text-[rgb(var(--muted-foreground))]">
                   Updated {formatDateTime("en", house.updatedAt)}
                 </span>
-                <a
-                  href={`/admin/houses/${house.id}`}
-                  className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold"
-                >
-                  Edit
-                </a>
+                <Button asChild variant="outline" size="sm">
+                  <a href={`/admin/houses/${house.id}`}>Edit</a>
+                </Button>
                 {house.status === "ARCHIVED" ? (
                   <HouseStatusActionButton houseId={house.id} action="restore" />
                 ) : (

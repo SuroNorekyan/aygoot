@@ -1,8 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { Home } from "lucide-react";
 import { adminNavigation } from "@/config/navigation";
 import { cn } from "@/lib/utils/cn";
+import { Button } from "@/components/ui/button";
 import { AdminSignOutButton } from "./admin-sign-out-button";
 
 export function AdminNav() {
@@ -20,7 +22,15 @@ export function AdminNav() {
             Manage houses, review booking requests, and keep the guest experience polished.
           </p>
         </div>
-        <AdminSignOutButton />
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <a href="/">
+              <Home className="h-4 w-4" />
+              View site
+            </a>
+          </Button>
+          <AdminSignOutButton />
+        </div>
       </div>
       <nav className="flex flex-wrap gap-2">
         {adminNavigation.map((item) => {
@@ -33,8 +43,8 @@ export function AdminNav() {
               className={cn(
                 "rounded-full px-4 py-2 text-sm font-semibold transition",
                 active
-                  ? "bg-[rgb(var(--primary))] text-[rgb(var(--primary-foreground))]"
-                  : "bg-white/70 text-[rgb(var(--muted-foreground))] hover:text-[rgb(var(--foreground))]",
+                  ? "border border-[rgba(173,128,84,0.28)] bg-[rgba(173,128,84,0.16)] text-[rgb(var(--secondary))] shadow-[0_8px_18px_rgba(131,94,62,0.08)]"
+                  : "bg-white/70 text-[rgb(var(--muted-foreground))] hover:bg-white hover:text-[rgb(var(--foreground))]",
               )}
             >
               {item.label}
