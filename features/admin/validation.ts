@@ -11,7 +11,7 @@ const translationSchema = z.object({
 });
 
 const imageSchema = z.object({
-  url: z.string().min(1),
+  url: z.string().url(),
   alt: z.string().min(2).max(160),
   isCover: z.boolean().optional(),
 });
@@ -20,7 +20,7 @@ export const adminHouseSchema = z.object({
   slug: z
     .string()
     .regex(/^[a-z0-9-]+$/, "Slug must contain lowercase letters, numbers and dashes."),
-  status: z.enum(["DRAFT", "PUBLISHED"]),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
   type: z.enum(["BIG", "SMALL", "STANDARD"]),
   featured: z.boolean().optional(),
   pricePerNightAmd: z.coerce.number().int().min(1000),
@@ -36,3 +36,17 @@ export const adminHouseSchema = z.object({
   translations: z.array(translationSchema).min(1),
   images: z.array(imageSchema).min(1),
 });
+
+export function normalizeHouseImages(images: z.infer<typeof imageSchema>[]) {
+  const coverIndex = Math.max(
+    0,
+    images.findIndex((image) => image.isCover),
+  );
+
+  return images.map((image, index) => ({
+    url: image.url,
+    alt: image.alt,
+    position: index,
+    isCover: index === coverIndex,
+  }));
+}

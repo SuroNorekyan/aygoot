@@ -2,6 +2,7 @@ import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { ADMIN_2FA_COOKIE, verifyAdminTwoFactorToken } from "@/lib/security/admin-2fa";
+import { isAdminTwoFactorEnabled } from "@/lib/security/admin-flags";
 import { routing } from "@/lib/i18n/routing";
 
 const intlMiddleware = createIntlMiddleware(routing);
@@ -21,6 +22,7 @@ export default auth(async (request) => {
     }
 
     if (
+      isAdminTwoFactorEnabled() &&
       request.auth.user.twoFAEnabled &&
       !pathname.startsWith("/admin/2fa")
     ) {

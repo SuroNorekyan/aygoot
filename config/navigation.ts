@@ -11,10 +11,12 @@ export const accountNavigation = [
   { href: "/account/bookings", key: "navigation.myBookings" },
 ] as const;
 
+const adminTwoFactorEnabled = process.env.ADMIN_2FA_ENABLED === "true";
+
 export const adminNavigation = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/houses", label: "Houses" },
   { href: "/admin/bookings", label: "Bookings" },
   { href: "/admin/media", label: "Media" },
-  { href: "/admin/2fa/setup", label: "2FA" },
+  ...(adminTwoFactorEnabled ? [{ href: "/admin/2fa/setup", label: "2FA" }] : []),
 ] as const;

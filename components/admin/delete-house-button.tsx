@@ -15,7 +15,9 @@ export function DeleteHouseButton({ houseId, houseName }: { houseId: string; hou
       variant="outline"
       disabled={isPending}
       onClick={() => {
-        const confirmed = window.confirm(`Delete ${houseName}? This cannot be undone.`);
+        const confirmed = window.confirm(
+          `Permanently delete ${houseName}? Use archive unless this house has no bookings or history.`,
+        );
         if (!confirmed) return;
 
         startTransition(async () => {
@@ -23,8 +25,10 @@ export function DeleteHouseButton({ houseId, houseName }: { houseId: string; hou
             method: "DELETE",
           });
 
+          const body = (await response.json().catch(() => null)) as { error?: string } | null;
+
           if (!response.ok) {
-            toast({ title: "Unable to delete house.", variant: "destructive" });
+            toast({ title: body?.error ?? "Unable to delete house.", variant: "destructive" });
             return;
           }
 
@@ -34,7 +38,7 @@ export function DeleteHouseButton({ houseId, houseName }: { houseId: string; hou
         });
       }}
     >
-      Delete house
+      Hard delete
     </Button>
   );
 }

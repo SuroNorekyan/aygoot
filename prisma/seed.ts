@@ -1,8 +1,9 @@
+import "dotenv/config";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { HouseStatus, HouseType, PrismaClient, Role } from "@prisma/client";
-import { hashPassword } from "../lib/security/password";
+import { HouseStatus, HouseType, PrismaClient } from "@prisma/client";
+import { bootstrapAdmin } from "./admin-bootstrap";
 
 const prisma = new PrismaClient();
 const __filename = fileURLToPath(import.meta.url);
@@ -350,14 +351,6 @@ async function seedAmenities() {
 }
 
 async function seedHouses() {
-  await prisma.house.deleteMany({
-    where: {
-      slug: {
-        notIn: houseSeeds.map((house) => house.slug),
-      },
-    },
-  });
-
   const amenityMap = new Map(
     (await prisma.amenity.findMany()).map((amenity) => [
       amenity.slug,
@@ -452,31 +445,10 @@ async function seedHouses() {
   }
 }
 
-async function seedAdmin() {
-  const password = process.env.ADMIN_SEED_PASSWORD ?? "ChangeMe123";
-  const email = process.env.ADMIN_EMAIL ?? "aygoodriverlake@gmail.com";
-  const passwordHash = await hashPassword(password);
-
-  await prisma.user.upsert({
-    where: { email },
-    update: {
-      name: "Aygoot Admin",
-      role: Role.ADMIN,
-      passwordHash,
-    },
-    create: {
-      email,
-      name: "Aygoot Admin",
-      role: Role.ADMIN,
-      passwordHash,
-    },
-  });
-}
-
 async function main() {
   await seedAmenities();
   await seedHouses();
-  await seedAdmin();
+  await bootstrapAdmin(prisma);
 }
 
 main()

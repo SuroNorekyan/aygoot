@@ -1,12 +1,24 @@
 import { prisma } from "@/lib/db/prisma";
 import { getHouseOptions } from "@/features/houses/queries";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { formatDateTime } from "@/lib/utils/format";
+import { formatCurrencyAmd, formatDateTime } from "@/lib/utils/format";
+import { HouseStatusActionButton } from "@/components/admin/house-status-action-button";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminHousesPage() {
-  const houses = await getHouseOptions();
+export default async function AdminHousesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; status?: string; type?: string }>;
+}) {
+  const filters = await searchParams;
+  const status = ["DRAFT", "PUBLISHED", "ARCHIVED"].includes(filters.status ?? "")
+    ? (filters.status as "DRAFT" | "PUBLISHED" | "ARCHIVED")
+    : "all";
+  const type = ["BIG", "SMALL", "STANDARD"].includes(filters.type ?? "")
+    ? (filters.type as "BIG" | "SMALL" | "STANDARD")
+    : "all";
+  const houses = await getHouseOptions({ search: filters.q, status, type });
   const amenityCount = await prisma.amenity.count();
 
   return (
@@ -25,6 +37,37 @@ export default async function AdminHousesPage() {
           New house
         </a>
       </div>
+      <form className="surface-card grid gap-4 rounded-[28px] p-5 md:grid-cols-[1fr_180px_180px_auto]">
+        <input
+          name="q"
+          defaultValue={filters.q ?? ""}
+          placeholder="Search name or slug"
+          className="h-12 rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
+        />
+        <select
+          name="status"
+          defaultValue={status}
+          className="h-12 rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
+        >
+          <option value="all">All statuses</option>
+          <option value="PUBLISHED">Published</option>
+          <option value="DRAFT">Draft</option>
+          <option value="ARCHIVED">Archived</option>
+        </select>
+        <select
+          name="type"
+          defaultValue={type}
+          className="h-12 rounded-2xl border border-[rgba(var(--border),0.9)] bg-white/80 px-4 text-sm"
+        >
+          <option value="all">All types</option>
+          <option value="BIG">Big</option>
+          <option value="SMALL">Small</option>
+          <option value="STANDARD">Standard</option>
+        </select>
+        <button className="rounded-full bg-[rgb(var(--primary))] px-5 py-3 text-sm font-semibold text-[rgb(var(--primary-foreground))]">
+          Filter
+        </button>
+      </form>
       <div className="grid gap-4">
         {houses.map((house) => (
           <div key={house.id} className="surface-card rounded-[28px] p-5">
@@ -42,13 +85,16 @@ export default async function AdminHousesPage() {
                 <div>
                   <p className="display-font text-3xl font-medium">{house.translations[0]?.name ?? house.slug}</p>
                   <p className="text-sm text-[rgb(var(--muted-foreground))]">/{house.slug}</p>
+                  <p className="mt-2 text-sm text-[rgb(var(--muted-foreground))]">
+                    {house.type} • {house.guestCapacity} guests • {formatCurrencyAmd("en", house.priceWorkdaysAmd)} workdays / {formatCurrencyAmd("en", house.priceWeekdaysAmd)} weekends
+                  </p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <StatusBadge status={house.status} />
-                {house.featured ? <StatusBadge status="PUBLISHED" /> : null}
+                {house.featured ? <span className="rounded-full bg-white/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em]">Featured</span> : null}
                 <span className="text-sm text-[rgb(var(--muted-foreground))]">
-                  Updated {formatDateTime("en", house.publishedAt ?? new Date())}
+                  Updated {formatDateTime("en", house.updatedAt)}
                 </span>
                 <a
                   href={`/admin/houses/${house.id}`}
@@ -56,10 +102,20 @@ export default async function AdminHousesPage() {
                 >
                   Edit
                 </a>
+                {house.status === "ARCHIVED" ? (
+                  <HouseStatusActionButton houseId={house.id} action="restore" />
+                ) : (
+                  <HouseStatusActionButton houseId={house.id} action="archive" />
+                )}
               </div>
             </div>
           </div>
         ))}
+        {!houses.length ? (
+          <div className="surface-card rounded-[28px] p-6 text-sm text-[rgb(var(--muted-foreground))]">
+            No houses match the current filters.
+          </div>
+        ) : null}
       </div>
     </div>
   );

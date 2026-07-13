@@ -1,16 +1,26 @@
-import Image from "next/image";
 import { auth } from "@/auth";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
 import type { Locale } from "@/config/site";
 import { getUserBookings } from "@/features/bookings/service";
 import { createMetadata } from "@/lib/utils/metadata";
+import { prisma } from "@/lib/db/prisma";
 import { AccountAuthPanel } from "@/components/marketing/account-auth-panel";
-import { LogoutButton } from "@/components/shared/logout-button";
-import { StatusBadge } from "@/components/shared/status-badge";
-import { formatCurrencyAmd, formatDateRange } from "@/lib/utils/format";
-import { Link } from "@/lib/i18n/navigation";
+import { AccountDashboard } from "@/components/marketing/account-dashboard";
 
 export const dynamic = "force-dynamic";
+
+const googleAuthConfigured =
+  Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) &&
+  !process.env.AUTH_GOOGLE_ID?.startsWith("TODO_") &&
+  !process.env.AUTH_GOOGLE_SECRET?.startsWith("TODO_");
+
+function safeCallbackUrl(callbackUrl: string | undefined, locale: Locale) {
+  if (!callbackUrl) return `/${locale}/account`;
+  if (!callbackUrl.startsWith("/")) return `/${locale}/account`;
+  if (callbackUrl.startsWith("//")) return `/${locale}/account`;
+  return callbackUrl;
+}
 
 export async function generateMetadata({
   params,
@@ -31,16 +41,17 @@ export default async function AccountPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "account" });
-  const common = await getTranslations({ locale, namespace: "common" });
   const session = await auth();
   const { callbackUrl } = await searchParams;
+  const sanitizedCallbackUrl = safeCallbackUrl(callbackUrl, locale);
 
   if (!session?.user) {
     return (
       <div className="pb-12 pt-6">
         <AccountAuthPanel
           locale={locale}
-          callbackUrl={callbackUrl ?? `/${locale}/account`}
+          callbackUrl={sanitizedCallbackUrl}
+          googleAuthConfigured={googleAuthConfigured}
           copy={{
             title: t("auth.title"),
             subtitle: t("auth.subtitle"),
@@ -59,82 +70,51 @@ export default async function AccountPage({
     );
   }
 
-  const bookings = await getUserBookings(session.user.id, locale);
+  if (session.user.role === "ADMIN") {
+    redirect("/admin");
+  }
+
+  const [bookings, user] = await Promise.all([
+    getUserBookings(session.user.id, locale),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        name: true,
+        email: true,
+        phone: true,
+        preferredLocale: true,
+        image: true,
+        passwordHash: true,
+        createdAt: true,
+      },
+    }),
+  ]);
+
+  if (!user) {
+    redirect(`/${locale}/account`);
+  }
 
   return (
-    <div className="space-y-8 pb-10">
-      <section className="surface-card rounded-[34px] p-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[rgb(var(--muted-foreground))]">
-              {t("dashboard.eyebrow")}
-            </p>
-            <h1 className="display-font mt-3 text-5xl font-medium">{t("dashboard.title")}</h1>
-            <p className="mt-4 max-w-3xl text-base leading-8 text-[rgb(var(--muted-foreground))]">
-              {t("dashboard.description")}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {session.user.role === "ADMIN" ? (
-              <a
-                href="/admin"
-                className="inline-flex items-center rounded-full bg-[rgb(var(--primary))] px-5 py-3 text-sm font-semibold text-[rgb(var(--primary-foreground))]"
-              >
-                {common("navigation.admin")}
-              </a>
-            ) : null}
-            <LogoutButton callbackUrl={`/${locale}`}>{t("dashboard.signOut")}</LogoutButton>
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="display-font text-3xl font-medium">{t("dashboard.history")}</h2>
-        {bookings.length ? (
-          <div className="grid gap-4">
-            {bookings.map((booking) => (
-              <div key={booking.id} className="surface-card rounded-[28px] p-5">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-center gap-4">
-                    {booking.house.image ? (
-                      <div className="relative h-20 w-24 overflow-hidden rounded-[18px]">
-                        <Image
-                          src={booking.house.image}
-                          alt={booking.house.name}
-                          fill
-                          sizes="96px"
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : null}
-                    <div>
-                      <Link href={`/houses/${booking.house.slug}`} locale={locale} className="display-font text-2xl font-medium">
-                        {booking.house.name}
-                      </Link>
-                      <p className="text-sm text-[rgb(var(--muted-foreground))]">
-                        {formatDateRange(locale, booking.checkIn, booking.checkOut)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <p className="text-sm font-semibold">{formatCurrencyAmd(locale, booking.totalPriceAmd)}</p>
-                      <p className="text-xs text-[rgb(var(--muted-foreground))]">
-                        {booking.guestCount} guests
-                      </p>
-                    </div>
-                    <StatusBadge status={booking.status} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="surface-card rounded-[28px] p-6 text-sm text-[rgb(var(--muted-foreground))]">
-            {t("dashboard.empty")}
-          </div>
-        )}
-      </section>
-    </div>
+    <AccountDashboard
+      locale={locale}
+      user={{
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        preferredLocale: user.preferredLocale,
+        image: user.image,
+        createdAt: user.createdAt,
+        hasPassword: Boolean(user.passwordHash),
+      }}
+      bookings={bookings}
+      copy={{
+        eyebrow: t("dashboard.eyebrow"),
+        title: t("dashboard.title"),
+        description: t("dashboard.description"),
+        history: t("dashboard.history"),
+        empty: t("dashboard.empty"),
+        signOut: t("dashboard.signOut"),
+      }}
+    />
   );
 }

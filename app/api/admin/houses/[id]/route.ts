@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { HouseStatus } from "@prisma/client";
+import { HouseStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { requireAdminSession, UnauthorizedError } from "@/lib/auth/guards";
-import { adminHouseSchema } from "@/features/admin/validation";
+import { adminHouseSchema, normalizeHouseImages } from "@/features/admin/validation";
 
 export async function PATCH(
   request: Request,
@@ -22,54 +22,54 @@ export async function PATCH(
     }
 
     const payload = parsed.data;
-    const updated = await prisma.house.update({
-      where: { id },
-      data: {
-        slug: payload.slug,
-        status: payload.status === "PUBLISHED" ? HouseStatus.PUBLISHED : HouseStatus.DRAFT,
-        type: payload.type,
-        featured: Boolean(payload.featured),
-        pricePerNightAmd: payload.pricePerNightAmd,
-        priceWorkdaysAmd: payload.priceWorkdaysAmd,
-        priceWeekdaysAmd: payload.priceWeekdaysAmd,
-        guestCapacity: payload.guestCapacity,
-        bedrooms: payload.bedrooms,
-        bathrooms: payload.bathrooms,
-        latitude: payload.latitude ?? null,
-        longitude: payload.longitude ?? null,
-        sortOrder: payload.sortOrder ?? 0,
-        publishedAt: payload.status === "PUBLISHED" ? new Date() : null,
-        translations: {
-          deleteMany: {},
-          create: payload.translations.map((translation) => ({
-            locale: translation.locale,
-            name: translation.name,
-            shortDescription: translation.shortDescription,
-            description: translation.description,
-            locationLabel: translation.locationLabel || null,
-            nearbyLabel: translation.nearbyLabel || null,
-          })),
+    const updated = await prisma.$transaction((tx) =>
+      tx.house.update({
+        where: { id },
+        data: {
+          slug: payload.slug,
+          status: payload.status as HouseStatus,
+          type: payload.type,
+          featured: Boolean(payload.featured),
+          pricePerNightAmd: payload.pricePerNightAmd,
+          priceWorkdaysAmd: payload.priceWorkdaysAmd,
+          priceWeekdaysAmd: payload.priceWeekdaysAmd,
+          guestCapacity: payload.guestCapacity,
+          bedrooms: payload.bedrooms,
+          bathrooms: payload.bathrooms,
+          latitude: payload.latitude ?? null,
+          longitude: payload.longitude ?? null,
+          sortOrder: payload.sortOrder ?? 0,
+          publishedAt: payload.status === "PUBLISHED" ? new Date() : null,
+          translations: {
+            deleteMany: {},
+            create: payload.translations.map((translation) => ({
+              locale: translation.locale,
+              name: translation.name,
+              shortDescription: translation.shortDescription,
+              description: translation.description,
+              locationLabel: translation.locationLabel || null,
+              nearbyLabel: translation.nearbyLabel || null,
+            })),
+          },
+          images: {
+            deleteMany: {},
+            create: normalizeHouseImages(payload.images),
+          },
+          houseAmenities: {
+            deleteMany: {},
+            create: payload.amenityIds.map((amenityId) => ({ amenityId })),
+          },
         },
-        images: {
-          deleteMany: {},
-          create: payload.images.map((image, index) => ({
-            url: image.url,
-            alt: image.alt,
-            position: index,
-            isCover: image.isCover || index === 0,
-          })),
-        },
-        houseAmenities: {
-          deleteMany: {},
-          create: payload.amenityIds.map((amenityId) => ({ amenityId })),
-        },
-      },
-    });
+      }),
+    );
 
     return NextResponse.json({ house: updated });
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
+    }
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return NextResponse.json({ error: "A house with this slug already exists." }, { status: 409 });
     }
     console.error(error);
     return NextResponse.json({ error: "Unable to update house." }, { status: 500 });
@@ -83,6 +83,15 @@ export async function DELETE(
   try {
     await requireAdminSession();
     const { id } = await params;
+    const bookingCount = await prisma.booking.count({ where: { houseId: id } });
+
+    if (bookingCount > 0) {
+      return NextResponse.json(
+        { error: "Archive houses with bookings instead of deleting them." },
+        { status: 409 },
+      );
+    }
+
     await prisma.house.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {

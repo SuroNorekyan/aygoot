@@ -1,10 +1,16 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/db/prisma";
 import { verifyPassword } from "@/lib/security/password";
 import { consumeRateLimit } from "@/lib/security/rate-limit";
 import { credentialsSchema } from "@/features/auth/validation";
+
+const hasGoogleAuth =
+  Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) &&
+  !process.env.AUTH_GOOGLE_ID?.startsWith("TODO_") &&
+  !process.env.AUTH_GOOGLE_SECRET?.startsWith("TODO_");
 
 export const {
   handlers: { GET, POST },
@@ -30,7 +36,7 @@ export const {
         }
 
         const { email, password } = parsed.data;
-        const normalizedEmail = email.toLowerCase();
+        const normalizedEmail = email;
         const rate = consumeRateLimit(`auth:signin:${normalizedEmail}`, 5, 60_000);
 
         if (!rate.success) {
@@ -60,6 +66,15 @@ export const {
         };
       },
     }),
+    ...(hasGoogleAuth
+      ? [
+          Google({
+            clientId: process.env.AUTH_GOOGLE_ID!,
+            clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+            allowDangerousEmailAccountLinking: false,
+          }),
+        ]
+      : []),
   ],
   callbacks: {
     async jwt({ token, user }) {
@@ -79,6 +94,22 @@ export const {
       }
 
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+
+      try {
+        const parsed = new URL(url);
+        if (parsed.origin === baseUrl) {
+          return url;
+        }
+      } catch {
+        return baseUrl;
+      }
+
+      return baseUrl;
     },
   },
   secret: process.env.AUTH_SECRET,

@@ -1,4 +1,4 @@
-import { BookingStatus } from "@prisma/client";
+import { BookingStatus, HouseStatus } from "@prisma/client";
 import type { Session } from "next-auth";
 import { prisma } from "@/lib/db/prisma";
 import { parseDateOnly, rangesOverlap } from "@/lib/utils/dates";
@@ -112,6 +112,14 @@ export async function createBookingRequest(input: unknown, session: Session | nu
   });
 
   if (!house) {
+    return {
+      success: false as const,
+      status: 404,
+      body: { error: "House not found." },
+    };
+  }
+
+  if (house.status !== HouseStatus.PUBLISHED) {
     return {
       success: false as const,
       status: 404,

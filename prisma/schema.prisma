@@ -15,6 +15,7 @@ enum Role {
 enum HouseStatus {
   DRAFT
   PUBLISHED
+  ARCHIVED
 }
 
 enum HouseType {
@@ -37,21 +38,23 @@ enum InquiryStatus {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  emailVerified  DateTime?
-  image          String?
-  role           Role      @default(USER)
-  passwordHash   String?
-  twoFAEnabled   Boolean   @default(false)
-  twoFASecret    String?
-  recoveryCodes  String[]  @default([])
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  accounts       Account[]
-  sessions       Session[]
-  bookings       Booking[]
+  id              String    @id @default(cuid())
+  name            String?
+  email           String?   @unique
+  emailVerified   DateTime?
+  image           String?
+  phone           String?
+  preferredLocale String?
+  role            Role      @default(USER)
+  passwordHash    String?
+  twoFAEnabled    Boolean   @default(false)
+  twoFASecret     String?
+  recoveryCodes   String[]  @default([])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  accounts        Account[]
+  sessions        Session[]
+  bookings        Booking[]
 }
 
 model Account {
@@ -116,12 +119,12 @@ model House {
 }
 
 model HouseTranslation {
-  id               String @id @default(cuid())
+  id               String  @id @default(cuid())
   houseId          String
   locale           String
   name             String
-  shortDescription String @db.Text
-  description      String @db.Text
+  shortDescription String  @db.Text
+  description      String  @db.Text
   locationLabel    String?
   nearbyLabel      String?
 
@@ -170,21 +173,21 @@ model HouseAmenity {
 
 model Booking {
   id            String        @id @default(cuid())
-  houseId        String
-  userId         String?
-  guestName      String
-  guestEmail     String
-  guestPhone     String
-  locale         String
-  checkIn        DateTime     @db.Date
-  checkOut       DateTime     @db.Date
-  guestCount     Int
-  totalPriceAmd  Int
-  status         BookingStatus @default(PENDING)
-  guestNotes     String?      @db.Text
-  adminNotes     String?      @db.Text
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  houseId       String
+  userId        String?
+  guestName     String
+  guestEmail    String
+  guestPhone    String
+  locale        String
+  checkIn       DateTime      @db.Date
+  checkOut      DateTime      @db.Date
+  guestCount    Int
+  totalPriceAmd Int
+  status        BookingStatus @default(PENDING)
+  guestNotes    String?       @db.Text
+  adminNotes    String?       @db.Text
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
   user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -195,11 +198,11 @@ model Booking {
 
 model AvailabilityBlock {
   id        String   @id @default(cuid())
-  houseId    String
-  startDate  DateTime @db.Date
-  endDate    DateTime @db.Date
-  reason     String?
-  createdAt  DateTime @default(now())
+  houseId   String
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+  reason    String?
+  createdAt DateTime @default(now())
 
   house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
 

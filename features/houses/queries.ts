@@ -153,8 +153,32 @@ export async function getHouseBySlug(slug: string, locale: Locale) {
   };
 }
 
-export async function getHouseOptions() {
+export async function getHouseOptions(filters?: {
+  search?: string;
+  status?: "all" | "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  type?: "all" | "BIG" | "SMALL" | "STANDARD";
+}) {
+  const search = filters?.search?.trim();
+
   return prisma.house.findMany({
+    where: {
+      ...(filters?.status && filters.status !== "all" ? { status: filters.status } : {}),
+      ...(filters?.type && filters.type !== "all" ? { type: filters.type } : {}),
+      ...(search
+        ? {
+            OR: [
+              { slug: { contains: search, mode: "insensitive" } },
+              {
+                translations: {
+                  some: {
+                    name: { contains: search, mode: "insensitive" },
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
+    },
     select: {
       id: true,
       slug: true,
@@ -168,6 +192,7 @@ export async function getHouseOptions() {
       bedrooms: true,
       bathrooms: true,
       publishedAt: true,
+      updatedAt: true,
       translations: {
         where: { locale: "en" },
         take: 1,
@@ -175,6 +200,7 @@ export async function getHouseOptions() {
       images: {
         take: 1,
         where: { isCover: true },
+        orderBy: { position: "asc" },
       },
     },
     orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],

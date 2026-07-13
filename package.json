@@ -15,6 +15,7 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "db:bootstrap-admin": "tsx prisma/bootstrap-admin.ts",
     "blob:upload-cottages": "tsx scripts/upload-cottage-images-to-blob.ts",
     "postinstall": "prisma generate"
   },

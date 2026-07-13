@@ -1,10 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { localeMeta, locales } from "@/config/site";
 import { cn } from "@/lib/utils/cn";
 
-export function LocaleSwitcher() {
+function LocaleSwitcherInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const parts = pathname.split("/").filter(Boolean);
@@ -42,5 +43,13 @@ export function LocaleSwitcher() {
         );
       })}
     </div>
+  );
+}
+
+export function LocaleSwitcher() {
+  return (
+    <Suspense fallback={null}>
+      <LocaleSwitcherInner />
+    </Suspense>
   );
 }

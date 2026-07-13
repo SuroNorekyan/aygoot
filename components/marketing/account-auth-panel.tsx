@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { Chrome } from "lucide-react";
 import type { Locale } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,10 +15,12 @@ type Mode = "login" | "register";
 export function AccountAuthPanel({
   locale,
   callbackUrl,
+  googleAuthConfigured,
   copy,
 }: {
   locale: Locale;
   callbackUrl: string;
+  googleAuthConfigured: boolean;
   copy: {
     title: string;
     subtitle: string;
@@ -36,6 +39,7 @@ export function AccountAuthPanel({
   const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("login");
   const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -53,9 +57,10 @@ export function AccountAuthPanel({
     event.preventDefault();
 
     startTransition(async () => {
+      setMessage(null);
       if (mode === "register") {
         if (form.password !== form.confirmPassword) {
-          toast({ title: "Passwords do not match.", variant: "destructive" });
+          setMessage("Passwords do not match.");
           return;
         }
 
@@ -66,6 +71,7 @@ export function AccountAuthPanel({
             name: form.name,
             email: form.email,
             password: form.password,
+            confirmPassword: form.confirmPassword,
           }),
         });
 
@@ -74,6 +80,7 @@ export function AccountAuthPanel({
         } | null;
 
         if (!registerResponse.ok) {
+          setMessage(registerBody?.error ?? "Unable to create account.");
           toast({
             title: registerBody?.error ?? "Unable to create account.",
             variant: "destructive",
@@ -90,7 +97,8 @@ export function AccountAuthPanel({
       });
 
       if (result?.error) {
-        toast({ title: "Unable to sign in.", variant: "destructive" });
+        setMessage("Invalid email or password.");
+        toast({ title: "Invalid email or password.", variant: "destructive" });
         return;
       }
 
@@ -122,6 +130,9 @@ export function AccountAuthPanel({
         <div>
           <Label htmlFor="auth-password" requiredIndicator>{copy.password}</Label>
           <Input id="auth-password" type="password" value={form.password} onChange={update("password")} required />
+          {mode === "register" ? (
+            <p className="mt-2 text-xs text-[rgb(var(--muted-foreground))]">{copy.passwordHint}</p>
+          ) : null}
         </div>
         {mode === "register" ? (
           <div>
@@ -133,17 +144,38 @@ export function AccountAuthPanel({
               onChange={update("confirmPassword")}
               required
             />
-            <p className="mt-2 text-xs text-[rgb(var(--muted-foreground))]">{copy.passwordHint}</p>
           </div>
+        ) : null}
+        {message ? (
+          <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            {message}
+          </p>
         ) : null}
         <Button type="submit" className="w-full" size="lg" disabled={isPending}>
           {mode === "login" ? copy.login : copy.register}
         </Button>
       </form>
+      {googleAuthConfigured ? (
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-3 w-full"
+          disabled={isPending}
+          onClick={() => {
+            void signIn("google", { callbackUrl });
+          }}
+        >
+          <Chrome className="h-4 w-4" />
+          Continue with Google
+        </Button>
+      ) : null}
       <button
         type="button"
         className="mt-5 w-full text-sm font-semibold text-[rgb(var(--muted-foreground))] underline-offset-4 hover:underline"
-        onClick={() => setMode((prev) => (prev === "login" ? "register" : "login"))}
+        onClick={() => {
+          setMessage(null);
+          setMode((prev) => (prev === "login" ? "register" : "login"));
+        }}
       >
         {mode === "login" ? copy.switchToRegister : copy.switchToLogin}
       </button>

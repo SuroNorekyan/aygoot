@@ -8,6 +8,7 @@ export function StatusBadge({ status }: { status: string }) {
 
   if (status === "PUBLISHED") return <Badge variant="accent">Published</Badge>;
   if (status === "DRAFT") return <Badge variant="neutral">Draft</Badge>;
+  if (status === "ARCHIVED") return <Badge variant="danger">Archived</Badge>;
 
   return <Badge variant="neutral">{status === "PENDING" ? "Pending" : status}</Badge>;
 }

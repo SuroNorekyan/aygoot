@@ -6,7 +6,7 @@
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm password",
-    "passwordHint": "Use at least 8 characters with uppercase, lowercase, and a number.",
+    "passwordHint": "Use at least 8 characters with uppercase, lowercase, a number, and a symbol.",
     "login": "Log in",
     "register": "Create account",
     "switchToRegister": "Need an account? Create one",

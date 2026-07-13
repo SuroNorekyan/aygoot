@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession, UnauthorizedError } from "@/lib/auth/guards";
 import { prisma } from "@/lib/db/prisma";
+import { isAdminTwoFactorEnabled } from "@/lib/security/admin-flags";
 import { generateQRCodeDataUrl, generateTwoFactorSecret, encryptSecret } from "@/lib/security/totp";
 
 export async function POST() {
   try {
+    if (!isAdminTwoFactorEnabled()) {
+      return NextResponse.json({ error: "Admin 2FA is not enabled for this environment." }, { status: 404 });
+    }
+
     const session = await requireAdminSession();
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },

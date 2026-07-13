@@ -2,11 +2,16 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { requireAdminSession, UnauthorizedError } from "@/lib/auth/guards";
 import { prisma } from "@/lib/db/prisma";
+import { isAdminTwoFactorEnabled } from "@/lib/security/admin-flags";
 import { adminTwoFactorCookie } from "@/lib/security/admin-2fa";
 import { decryptSecret, generateRecoveryCodes, verifyTotpToken } from "@/lib/security/totp";
 
 export async function POST(request: Request) {
   try {
+    if (!isAdminTwoFactorEnabled()) {
+      return NextResponse.json({ error: "Admin 2FA is not enabled for this environment." }, { status: 404 });
+    }
+
     const session = await requireAdminSession();
     const body = (await request.json().catch(() => null)) as { token?: string } | null;
 

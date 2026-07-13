@@ -1,9 +1,8 @@
-import { auth } from "@/auth";
 import { publicNavigation } from "@/config/navigation";
 import type { Locale } from "@/config/site";
 import { Link } from "@/lib/i18n/navigation";
 import { getTranslations } from "next-intl/server";
-import { CircleUserRound, ShieldCheck } from "lucide-react";
+import { CircleUserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 import { LocaleSwitcher } from "./locale-switcher";
@@ -11,7 +10,6 @@ import { MobileNav } from "./mobile-nav";
 
 export async function SiteHeader({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "common" });
-  const session = await auth();
   const items = publicNavigation.map((item) => ({
     href: `/${locale}${item.href === "/" ? "" : item.href}`,
     label: t(item.key),
@@ -45,21 +43,12 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
           <LocaleSwitcher />
         </div>
         <div className="ml-auto flex items-center gap-3 lg:ml-4">
-          {session?.user?.role === "ADMIN" ? (
-            <Button asChild variant="light" className="hidden sm:inline-flex">
-              <a href="/admin">
-                <ShieldCheck className="h-4 w-4" />
-                {t("navigation.admin")}
-              </a>
-            </Button>
-          ) : (
-            <Button asChild variant="light" className="hidden sm:inline-flex">
-              <Link href="/account" locale={locale}>
-                <CircleUserRound className="h-4 w-4" />
-                {t("navigation.account")}
-              </Link>
-            </Button>
-          )}
+          <Button asChild variant="light" className="hidden sm:inline-flex">
+            <Link href="/account" locale={locale}>
+              <CircleUserRound className="h-4 w-4" />
+              {t("navigation.account")}
+            </Link>
+          </Button>
         </div>
       </div>
     </header>
