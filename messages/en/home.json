@@ -1,61 +1,83 @@
 {
   "hero": {
-    "eyebrow": "Aygoot • Dilijan, Armenia",
-    "title": "Heavenly rainforest escape.",
-    "subtitle": "Forest air, mountain calm, and a curated collection of premium houses in Dilijan for romantic weekends, elegant family retreats, and quiet resets.",
+    "eyebrow": "AyGood River Lake • Dilijan, Armenia",
+    "title": "River-lake cottages and nature services in Dilijan.",
+    "subtitle": "Private cottages, lake activities, and direct booking support in Dilijan.",
     "primary": "Explore houses",
-    "secondary": "Why Aygoot",
-    "pillOne": "Private houses in Dilijan",
-    "pillTwo": "Human-reviewed booking",
-    "pillThree": "Forest air, mountain calm",
+    "secondary": "Find us",
+    "pillOne": "Private cottages by the river lake",
+    "pillTwo": "Activities for families and groups",
+    "pillThree": "Direct booking support",
     "metricHouses": "Houses",
-    "metricReview": "Review",
-    "metricLocales": "Locales"
+    "metricServices": "Services",
+    "metricContact": "Contact"
+  },
+  "heroCard": {
+    "eyebrow": "Plan your visit",
+    "title": "Map, phone, and email in one place."
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "More to do around the cottages.",
+    "subtitle": "The client-provided service list is now modelled as structured content so the homepage can show the real AyGood activities instead of generic hospitality copy.",
+    "cardEyebrow": "On site",
+    "cardTitle": "Cottages, water, forest, and activities in one place.",
+    "locationButton": "View location",
+    "mapButton": "Open map",
+    "items": {
+      "apitherapy": {
+        "title": "Apitherapy",
+        "description": "A wellness service listed for AyGood guests."
+      },
+      "miniGolf": {
+        "title": "Mini golf",
+        "description": "A compact outdoor game option from the service list."
+      },
+      "openAirCinema": {
+        "title": "Open-air cinema",
+        "description": "Outdoor movie experience listed for the resort."
+      },
+      "fishFeeding": {
+        "title": "Fish feeding",
+        "description": "A water-side activity for feeding the fish."
+      },
+      "silentParty": {
+        "title": "Silent party",
+        "description": "Music-focused group activity listed by the client."
+      },
+      "bonfireEvening": {
+        "title": "Evening around the campfire",
+        "description": "A gathering format centered on the fire area."
+      },
+      "ecoEthnoKitchen": {
+        "title": "Eco Ethno kitchen",
+        "description": "Food experience presented as Eco Ethno kitchen."
+      },
+      "geepTour": {
+        "title": "Geep tour",
+        "description": "Tour service listed with the supplied spelling."
+      },
+      "evChargingParking": {
+        "title": "Parking with charging station",
+        "description": "Parking support with charging station availability."
+      },
+      "starlinkWifi": {
+        "title": "Starlink WiFi",
+        "description": "Wi-Fi service provided through Starlink."
+      }
+    }
   },
   "featured": {
     "eyebrow": "Featured houses",
-    "title": "A curated retreat collection with space to breathe.",
-    "subtitle": "Distinct homes with cedar warmth, mountain stillness, and a guest journey designed to feel polished from the first click."
-  },
-  "story": {
-    "eyebrow": "Why Aygoot",
-    "title": "Private retreats with forest texture and a calmer booking rhythm.",
-    "body": "Dilijan offers softer light, cooler air, and a slower pace between the trees. Aygoot pairs that setting with clear communication, thoughtful review, and a more elevated rental experience."
-  },
-  "experience": {
-    "eyebrow": "The Aygoot standard",
-    "title": "Built to feel premium before, during, and after booking.",
-    "subtitle": "Aygoot is designed like a hospitality product, not a generic listing wall.",
-    "items": [
-      "Booking requests stay clear on mobile, with quick review and calm communication.",
-      "Each house is curated for atmosphere, privacy, and a stronger sense of place in Dilijan.",
-      "Warm cedar, moss, stone, and forest tones shape a more memorable stay journey."
-    ]
-  },
-  "trust": {
-    "eyebrow": "Stay with confidence",
-    "title": "Simple for guests, powerful for careful hosting.",
-    "items": [
-      {
-        "title": "Availability is reviewed carefully",
-        "description": "Aygoot begins with a request-first flow so each stay can be checked before confirmation, avoiding the bluntness of instant inventory."
-      },
-      {
-        "title": "Guest or account booking",
-        "description": "Send a request as a guest or keep your stay history in a personal account without adding friction to the first booking."
-      },
-      {
-        "title": "Thoughtful communication",
-        "description": "Every booking step is mirrored by clear email updates, so guests always know what is confirmed, pending, or next."
-      }
-    ]
+    "title": "Choose a cottage for the way you want to stay.",
+    "subtitle": "Browse real AyGood cottages with gallery images served from the production catalogue."
   },
   "cta": {
     "eyebrow": "Begin your stay",
     "title": "Choose a quieter base in Dilijan.",
-    "description": "Browse the full collection, compare the atmosphere of each house, and send a stay request in a few careful steps.",
+    "description": "Browse the full collection, compare each cottage, and send a stay request in a few steps.",
     "button": "Browse houses",
-    "cardEyebrow": "Aygoot atmosphere",
-    "cardBody": "Distinct houses, refined surfaces, and a booking flow that feels personal from the first message."
+    "cardEyebrow": "AyGood stay",
+    "cardBody": "Real cottage images, direct contact, and a clear booking request flow."
   }
 }

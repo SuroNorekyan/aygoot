@@ -6,7 +6,7 @@ export async function sendContactInquiryNotification(options: {
   phone?: string | null;
   message: string;
 }) {
-  const adminEmail = process.env.ADMIN_EMAIL ?? "hello@aygoot.am";
+  const adminEmail = process.env.ADMIN_EMAIL ?? "aygoodriverlake@gmail.com";
   const lines = [
     `New contact inquiry from ${options.name}`,
     "",

@@ -42,7 +42,7 @@ function getTransporter() {
 }
 
 export async function sendEmail(options: MailOptions) {
-  const from = process.env.EMAIL_FROM?.trim() ?? "Aygoot <no-reply@aygoot.am>";
+  const from = process.env.EMAIL_FROM?.trim() ?? "AyGood <aygoodriverlake@gmail.com>";
   const transporter = await getTransporter();
 
   await transporter.sendMail({

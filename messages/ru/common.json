@@ -1,11 +1,12 @@
 {
   "brand": {
-    "name": "Aygoot",
-    "tagline": "Приватные дома в Дилижане"
+    "name": "AyGood",
+    "tagline": "River Lake Eco Resort"
   },
   "navigation": {
     "home": "Главная",
     "houses": "Дома",
+    "location": "Расположение",
     "about": "О проекте",
     "contact": "Контакты",
     "account": "Аккаунт",
@@ -28,7 +29,7 @@
     "back": "Назад"
   },
   "footer": {
-    "description": "Подобранные приватные дома в Дилижане для гостей, которым нужны тишина, тепло и надежный процесс бронирования.",
+    "description": "AyGood River Lake Eco Resort объединяет приватные коттеджи, активности на природе и прямую поддержку гостей в Дилижане.",
     "exploreTitle": "Навигация",
     "contactTitle": "Связаться с Aygoot",
     "rights": "Aygoot. Все права защищены.",

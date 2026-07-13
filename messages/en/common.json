@@ -1,11 +1,12 @@
 {
   "brand": {
-    "name": "Aygoot",
-    "tagline": "Private houses in Dilijan"
+    "name": "AyGood",
+    "tagline": "River Lake Eco Resort"
   },
   "navigation": {
     "home": "Home",
     "houses": "Houses",
+    "location": "Location",
     "about": "About",
     "contact": "Contact",
     "account": "Account",
@@ -28,7 +29,7 @@
     "back": "Back"
   },
   "footer": {
-    "description": "Curated private houses in Dilijan for guests who want calm, warmth, and a trustworthy booking experience.",
+    "description": "AyGood River Lake Eco Resort brings private cottages, outdoor services, and direct guest support together in Dilijan.",
     "exploreTitle": "Explore",
     "contactTitle": "Reach Aygoot",
     "rights": "Aygoot. All rights reserved.",

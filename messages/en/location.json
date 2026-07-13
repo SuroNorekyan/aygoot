@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "eyebrow": "Location",
+    "title": "Find AyGood River Lake Eco Resort.",
+    "description": "Use the map for directions to the resort, then call or message the team if you need arrival details before your stay."
+  },
+  "actions": {
+    "openMap": "Open map",
+    "contact": "Contact AyGood",
+    "openInGoogle": "Open in Google Maps"
+  },
+  "map": {
+    "title": "AyGood River Lake Eco Resort location map",
+    "captionTitle": "Exact map position",
+    "captionBody": "The location uses the coordinates and Google Maps embed supplied by the client."
+  }
+}

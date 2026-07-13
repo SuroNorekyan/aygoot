@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "eyebrow": "Расположение",
+    "title": "Найдите AyGood River Lake Eco Resort.",
+    "description": "Используйте карту для маршрута к резорту, а если перед приездом нужны детали, позвоните или напишите команде."
+  },
+  "actions": {
+    "openMap": "Открыть карту",
+    "contact": "Связаться с AyGood",
+    "openInGoogle": "Открыть в Google Maps"
+  },
+  "map": {
+    "title": "Карта локации AyGood River Lake Eco Resort",
+    "captionTitle": "Точная точка на карте",
+    "captionBody": "Локация использует координаты и Google Maps embed, предоставленные клиентом."
+  }
+}

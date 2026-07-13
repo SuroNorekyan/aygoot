@@ -454,7 +454,7 @@ async function seedHouses() {
 
 async function seedAdmin() {
   const password = process.env.ADMIN_SEED_PASSWORD ?? "ChangeMe123";
-  const email = process.env.ADMIN_EMAIL ?? "hello@aygoot.am";
+  const email = process.env.ADMIN_EMAIL ?? "aygoodriverlake@gmail.com";
   const passwordHash = await hashPassword(password);
 
   await prisma.user.upsert({

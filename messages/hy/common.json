@@ -1,11 +1,12 @@
 {
   "brand": {
-    "name": "Aygoot",
-    "tagline": "Մասնավոր տներ Դիլիջանում"
+    "name": "AyGood",
+    "tagline": "River Lake Eco Resort"
   },
   "navigation": {
     "home": "Գլխավոր",
     "houses": "Տներ",
+    "location": "Տեղադրություն",
     "about": "Մեր մասին",
     "contact": "Կապ",
     "account": "Հաշիվ",
@@ -28,7 +29,7 @@
     "back": "Հետ"
   },
   "footer": {
-    "description": "Դիլիջանի ընտրված մասնավոր տներ նրանց համար, ովքեր փնտրում են հանգստություն, ջերմություն և վստահելի ամրագրման փորձ։",
+    "description": "AyGood River Lake Eco Resort-ը Դիլիջանում միավորում է մասնավոր քոթեջները, բացօթյա ծառայությունները և հյուրերի ուղիղ աջակցությունը։",
     "exploreTitle": "Բացահայտել",
     "contactTitle": "Կապ Aygoot-ի հետ",
     "rights": "Aygoot. Բոլոր իրավունքները պաշտպանված են։",

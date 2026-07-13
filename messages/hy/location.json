@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "eyebrow": "Տեղադրություն",
+    "title": "Գտեք AyGood River Lake Eco Resort-ը։",
+    "description": "Օգտվեք քարտեզից հանգստավայր հասնելու համար, իսկ այցից առաջ մանրամասների կարիք ունենալու դեպքում զանգեք կամ գրեք թիմին։"
+  },
+  "actions": {
+    "openMap": "Բացել քարտեզը",
+    "contact": "Կապվել AyGood-ի հետ",
+    "openInGoogle": "Բացել Google Maps-ում"
+  },
+  "map": {
+    "title": "AyGood River Lake Eco Resort տեղադրության քարտեզ",
+    "captionTitle": "Ճշգրիտ տեղադրություն քարտեզում",
+    "captionBody": "Տեղադրությունը օգտագործում է հաճախորդի տրամադրած կոորդինատները և Google Maps embed-ը։"
+  }
+}

@@ -28,7 +28,7 @@ const variantClasses: Record<Variant, string> = {
   ghost:
     "bg-transparent text-[rgb(var(--foreground))] hover:bg-[rgba(var(--primary),0.06)]",
   outline:
-    "border border-white/20 bg-white/10 text-white shadow-[0_10px_24px_rgba(0,0,0,0.12)] backdrop-blur hover:-translate-y-0.5 hover:bg-white/16 hover:text-white",
+    "border border-[rgba(var(--border-soft),0.42)] bg-white/58 text-[rgb(var(--foreground))] shadow-[0_10px_24px_rgba(37,28,21,0.08)] backdrop-blur hover:-translate-y-0.5 hover:bg-white hover:text-[rgb(var(--foreground))]",
   light:
     "bg-white/85 text-[rgb(var(--foreground))] shadow-[0_12px_28px_rgba(17,14,14,0.08)] hover:bg-white",
 };

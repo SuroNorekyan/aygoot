@@ -15,7 +15,7 @@ type BookingEmailBase = {
   totalPriceAmd: number;
 };
 
-const adminEmail = process.env.ADMIN_EMAIL ?? "hello@aygoot.am";
+const adminEmail = process.env.ADMIN_EMAIL ?? "aygoodriverlake@gmail.com";
 
 export async function sendBookingRequestEmails(options: BookingEmailBase) {
   const subject = `Aygoot booking request for ${options.houseName}`;

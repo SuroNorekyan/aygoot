@@ -11,5 +11,9 @@
     "message": "Message",
     "submit": "Send inquiry",
     "success": "Your message has been sent."
+  },
+  "map": {
+    "title": "AyGood River Lake Eco Resort map",
+    "button": "View full location"
   }
 }

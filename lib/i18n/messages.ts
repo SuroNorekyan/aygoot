@@ -7,6 +7,7 @@ const loaders = {
     houses: () => import("@/messages/en/houses.json"),
     about: () => import("@/messages/en/about.json"),
     contact: () => import("@/messages/en/contact.json"),
+    location: () => import("@/messages/en/location.json"),
     account: () => import("@/messages/en/account.json"),
     booking: () => import("@/messages/en/booking.json"),
   },
@@ -16,6 +17,7 @@ const loaders = {
     houses: () => import("@/messages/hy/houses.json"),
     about: () => import("@/messages/hy/about.json"),
     contact: () => import("@/messages/hy/contact.json"),
+    location: () => import("@/messages/hy/location.json"),
     account: () => import("@/messages/hy/account.json"),
     booking: () => import("@/messages/hy/booking.json"),
   },
@@ -25,6 +27,7 @@ const loaders = {
     houses: () => import("@/messages/ru/houses.json"),
     about: () => import("@/messages/ru/about.json"),
     contact: () => import("@/messages/ru/contact.json"),
+    location: () => import("@/messages/ru/location.json"),
     account: () => import("@/messages/ru/account.json"),
     booking: () => import("@/messages/ru/booking.json"),
   },
@@ -32,12 +35,13 @@ const loaders = {
 
 export async function getLocaleMessages(locale: Locale) {
   const current = loaders[locale];
-  const [common, home, houses, about, contact, account, booking] = await Promise.all([
+  const [common, home, houses, about, contact, location, account, booking] = await Promise.all([
     current.common(),
     current.home(),
     current.houses(),
     current.about(),
     current.contact(),
+    current.location(),
     current.account(),
     current.booking(),
   ]);
@@ -48,6 +52,7 @@ export async function getLocaleMessages(locale: Locale) {
     houses: houses.default,
     about: about.default,
     contact: contact.default,
+    location: location.default,
     account: account.default,
     booking: booking.default,
   };

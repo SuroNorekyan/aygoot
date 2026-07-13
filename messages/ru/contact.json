@@ -11,5 +11,9 @@
     "message": "Сообщение",
     "submit": "Отправить запрос",
     "success": "Ваше сообщение отправлено."
+  },
+  "map": {
+    "title": "Карта AyGood River Lake Eco Resort",
+    "button": "Смотреть полную локацию"
   }
 }

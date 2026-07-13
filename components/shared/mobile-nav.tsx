@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleUserRound, Menu, Mountain } from "lucide-react";
+import { CircleUserRound, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -10,6 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Logo } from "./logo";
 import { LocaleSwitcher } from "./locale-switcher";
 
 type NavItem = {
@@ -39,10 +40,8 @@ export function MobileNav({
       <SheetContent className="overflow-hidden bg-[linear-gradient(180deg,rgba(255,251,245,0.96),rgba(244,237,226,0.94))] lg:hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(108,136,102,0.2),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(172,128,84,0.18),transparent_32%)]" />
         <SheetHeader className="relative">
-          <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(135deg,rgba(74,95,72,1),rgba(47,35,30,1))] text-white shadow-[0_16px_30px_rgba(37,28,21,0.2)]">
-            <Mountain className="h-5 w-5" />
-          </div>
-          <SheetTitle className="pt-3">Aygoot</SheetTitle>
+          <Logo />
+          <SheetTitle className="pt-3">AyGood River Lake</SheetTitle>
           <p className="max-w-[18rem] text-sm leading-7 text-[rgb(var(--muted-foreground))]">
             {description}
           </p>

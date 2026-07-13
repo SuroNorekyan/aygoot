@@ -1,6 +1,7 @@
 export const publicNavigation = [
   { href: "/", key: "navigation.home" },
   { href: "/houses", key: "navigation.houses" },
+  { href: "/location", key: "navigation.location" },
   { href: "/about", key: "navigation.about" },
   { href: "/contact", key: "navigation.contact" },
 ] as const;

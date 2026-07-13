@@ -1,4 +1,5 @@
-import { TreePine } from "lucide-react";
+import Image from "next/image";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils/cn";
 
 export function Logo({
@@ -10,28 +11,39 @@ export function Logo({
 }) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-[linear-gradient(135deg,rgba(77,101,74,1),rgba(47,35,30,1))] text-[rgb(var(--primary-foreground))] shadow-[0_14px_30px_rgba(17,14,14,0.22)]">
-        <TreePine className="h-4 w-4 opacity-85" />
-        <span className="absolute -bottom-1.5 right-0 flex h-5 w-5 items-center justify-center rounded-full border border-[rgba(255,255,255,0.4)] bg-[rgb(var(--accent))] text-[10px] font-bold text-[rgb(var(--accent-foreground))] shadow-[0_8px_16px_rgba(17,14,14,0.18)]">
-          A
-        </span>
+      <div
+        className={cn(
+          "relative h-12 w-12 shrink-0 overflow-hidden rounded-full border shadow-[0_14px_30px_rgba(17,14,14,0.16)] sm:h-[3.25rem] sm:w-[3.25rem]",
+          inverted
+            ? "border-white/18 bg-white/8"
+            : "border-black/[0.04] bg-[rgb(var(--forest))]",
+        )}
+      >
+        <Image
+          src={siteConfig.logo.src}
+          alt={siteConfig.logo.alt}
+          fill
+          priority
+          sizes="52px"
+          className="object-cover object-center"
+        />
       </div>
       <div className="min-w-0">
         <p
           className={cn(
-            "display-font text-[1.75rem] font-medium leading-none tracking-[-0.04em]",
-            inverted ? "text-white" : undefined,
+            "display-font text-[1.55rem] font-medium leading-none",
+            inverted ? "text-white" : "text-[rgb(var(--foreground))]",
           )}
         >
-          Aygoot
+          AyGood
         </p>
         <p
           className={cn(
-            "text-[10px] font-semibold uppercase tracking-[0.32em]",
-            inverted ? "text-white/54" : "text-[rgb(var(--muted-foreground))]",
+            "mt-1 text-[10px] font-semibold uppercase tracking-[0.24em]",
+            inverted ? "text-white/58" : "text-[rgb(var(--muted-foreground))]",
           )}
         >
-          Dilijan private houses
+          River Lake
         </p>
       </div>
     </div>
