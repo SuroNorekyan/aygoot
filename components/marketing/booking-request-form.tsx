@@ -93,7 +93,9 @@ export function BookingRequestForm({
         }),
       });
 
-      const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+      const payload = (await response.json().catch(() => null)) as
+        | { error?: string; mail?: { customerSent?: boolean } }
+        | null;
 
       if (!response.ok) {
         toast({
@@ -105,7 +107,10 @@ export function BookingRequestForm({
 
       toast({
         title: copy.successTitle,
-        description: copy.successDescription,
+        description:
+          payload?.mail?.customerSent === false
+            ? "Your booking request was received. Our team will contact you shortly."
+            : copy.successDescription,
         variant: "success",
       });
       setForm((prev) => ({

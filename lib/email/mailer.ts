@@ -1,13 +1,31 @@
 import nodemailer from "nodemailer";
+import type { EmailType } from "@prisma/client";
+import { EmailDeliveryStatus } from "@prisma/client";
+import { prisma } from "@/lib/db/prisma";
+import { getMailConfig } from "./config";
 
 type MailOptions = {
   to: string;
   subject: string;
   text: string;
   html?: string;
+  replyTo?: string;
+  bookingId?: string | null;
+  type?: EmailType;
 };
 
 let transporterPromise: Promise<nodemailer.Transporter> | null = null;
+
+export function maskEmail(email: string) {
+  const [local, domain] = email.split("@");
+  if (!domain) return "invalid-email";
+  return `${local.slice(0, 2)}***@${domain}`;
+}
+
+function safeErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message.slice(0, 500);
+  return String(error).slice(0, 500);
+}
 
 function getTransporter() {
   if (transporterPromise) {
@@ -15,56 +33,98 @@ function getTransporter() {
   }
 
   transporterPromise = (async () => {
-    const host = process.env.SMTP_HOST?.trim();
-    const port = Number.parseInt(process.env.SMTP_PORT ?? "", 10);
-    const user = process.env.SMTP_USER?.trim();
-    const pass = process.env.SMTP_PASS?.trim();
+    const config = getMailConfig();
 
-    if (!host || !port || !user || !pass) {
-      throw new Error("SMTP is not fully configured.");
-    }
-
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465,
+    return nodemailer.createTransport({
+      host: config.host,
+      port: config.port,
+      secure: config.secure,
       auth: {
-        user,
-        pass,
+        user: config.user,
+        pass: config.pass,
       },
+      connectionTimeout: 15_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     });
-
-    await transporter.verify();
-    return transporter;
   })();
 
   return transporterPromise;
 }
 
 export async function sendEmail(options: MailOptions) {
-  const from = process.env.EMAIL_FROM?.trim() ?? "AyGood <aygoodriverlake@gmail.com>";
+  const config = getMailConfig();
   const transporter = await getTransporter();
 
   await transporter.sendMail({
-    from,
+    from: config.from,
+    replyTo: options.replyTo ?? config.replyTo,
     ...options,
   });
 }
 
-export async function safeSendEmail(options: MailOptions) {
-  try {
-    await sendEmail(options);
-  } catch (error) {
-    console.warn("[email] send skipped or failed", error);
-  }
+export async function verifyMailTransport() {
+  const transporter = await getTransporter();
+  await transporter.verify();
 }
 
-export function toEmailHtml(lines: string[]) {
-  return lines
-    .map((line) =>
-      line
-        ? `<p style="margin:0 0 12px;font-size:14px;line-height:1.65;">${line}</p>`
-        : `<div style="height:8px"></div>`,
-    )
-    .join("");
+async function createDelivery(options: MailOptions) {
+  if (!options.type) return null;
+
+  return prisma.emailDelivery.create({
+    data: {
+      bookingId: options.bookingId ?? null,
+      type: options.type,
+      recipient: options.to,
+      subject: options.subject,
+    },
+  });
+}
+
+export async function safeSendEmail(options: MailOptions) {
+  const delivery = await createDelivery(options).catch((error) => {
+    console.warn("[email] delivery record creation failed", {
+      event: "email_delivery_record_failed",
+      bookingId: options.bookingId ?? null,
+      type: options.type ?? "UNTRACKED",
+      recipient: maskEmail(options.to),
+      error: safeErrorMessage(error),
+    });
+    return null;
+  });
+
+  try {
+    await sendEmail(options);
+    if (delivery) {
+      await prisma.emailDelivery.update({
+        where: { id: delivery.id },
+        data: {
+          status: EmailDeliveryStatus.SENT,
+          attemptCount: { increment: 1 },
+          sentAt: new Date(),
+          lastError: null,
+        },
+      });
+    }
+    return { success: true as const };
+  } catch (error) {
+    const message = safeErrorMessage(error);
+    if (delivery) {
+      await prisma.emailDelivery.update({
+        where: { id: delivery.id },
+        data: {
+          status: EmailDeliveryStatus.FAILED,
+          attemptCount: { increment: 1 },
+          lastError: message,
+        },
+      });
+    }
+    console.warn("[email] send failed", {
+      event: `${options.type ?? "email"}_failed`,
+      bookingId: options.bookingId ?? null,
+      recipient: maskEmail(options.to),
+      error: message,
+    });
+    return { success: false as const, error: message };
+  }
 }

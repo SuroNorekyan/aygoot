@@ -1,4 +1,7 @@
-import { safeSendEmail, toEmailHtml } from "./mailer";
+import { EmailType } from "@prisma/client";
+import { getAdminNotificationEmail } from "./config";
+import { safeSendEmail } from "./mailer";
+import { brandedEmailLayout, paragraph, summaryTable } from "./templates/layout";
 
 export async function sendContactInquiryNotification(options: {
   name: string;
@@ -6,20 +9,35 @@ export async function sendContactInquiryNotification(options: {
   phone?: string | null;
   message: string;
 }) {
-  const adminEmail = process.env.ADMIN_EMAIL ?? "aygoodriverlake@gmail.com";
-  const lines = [
+  const subject = `AyGood contact inquiry from ${options.name}`;
+  const text = [
     `New contact inquiry from ${options.name}`,
     "",
     `Email: ${options.email}`,
     `Phone: ${options.phone || "—"}`,
     "",
     options.message,
-  ];
+  ].join("\n");
 
   await safeSendEmail({
-    to: adminEmail,
-    subject: `Aygoot contact inquiry from ${options.name}`,
-    text: lines.join("\n"),
-    html: toEmailHtml(lines),
+    to: getAdminNotificationEmail(),
+    replyTo: options.email,
+    subject,
+    text,
+    html: brandedEmailLayout({
+      title: subject,
+      preheader: `New inquiry from ${options.name}.`,
+      badge: { label: "Contact inquiry", tone: "pending" },
+      body: [
+        paragraph("A new contact inquiry was submitted from the AyGood website."),
+        summaryTable([
+          ["Name", options.name],
+          ["Email", options.email],
+          ["Phone", options.phone || "—"],
+        ]),
+        paragraph(options.message),
+      ].join(""),
+    }),
+    type: EmailType.CONTACT_INQUIRY_ADMIN,
   });
 }
