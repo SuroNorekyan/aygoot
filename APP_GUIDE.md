@@ -14,6 +14,8 @@ If you recreate Docker so the host port is `5432`, change `DATABASE_URL` to use 
 ```bash
 pnpm install
 pnpm prisma generate
+pnpm prisma migrate dev
+pnpm db:bootstrap-admin
 pnpm dev
 ```
 
@@ -34,12 +36,22 @@ docker ps
 DATABASE_URL="postgresql://postgres:postgres@localhost:5433/aygoot?schema=public"
 ```
 
-4. Apply migrations and seed:
+4. Apply migrations and bootstrap the administrator:
 
 ```bash
 pnpm prisma migrate dev
+pnpm db:bootstrap-admin
+```
+
+5. Seed catalogue/demo data only when needed:
+
+```bash
 pnpm db:seed
 ```
+
+`pnpm db:bootstrap-admin` is safe to rerun. It creates or updates the administrator
+from `ADMIN_SEED_NAME`, `ADMIN_SEED_EMAIL`, and `ADMIN_SEED_PASSWORD` without
+resetting an existing password unless `ADMIN_SEED_FORCE_PASSWORD_RESET="true"`.
 
 ## After Schema Changes
 
@@ -49,7 +61,7 @@ When `prisma/schema.prisma` changes:
 pnpm prisma validate
 pnpm prisma migrate dev
 pnpm prisma generate
-pnpm db:seed
+pnpm db:bootstrap-admin
 pnpm check
 ```
 
@@ -64,7 +76,10 @@ When only `prisma/seed.ts` changes:
 pnpm db:seed
 ```
 
-The current seed expects `prisma/cottage-image-manifest.json` by default and writes Blob URLs into `HouseImage`.
+The current seed expects `ADMIN_SEED_NAME`, `ADMIN_SEED_EMAIL`, and
+`ADMIN_SEED_PASSWORD`, and expects `prisma/cottage-image-manifest.json` by default
+for catalogue images. It writes Blob URLs into `HouseImage` and no longer deletes
+admin-created houses that are absent from the hardcoded seed list.
 For explicit local-only development without Blob, run:
 
 ```bash
@@ -109,8 +124,12 @@ DATABASE_URL="..."
 AUTH_SECRET="..."
 APP_URL="https://your-railway-domain.example"
 BLOB_READ_WRITE_TOKEN="..."
-ADMIN_EMAIL="..."
+ADMIN_SEED_NAME="AyGood Admin"
+ADMIN_SEED_EMAIL="aygoodriverlake@gmail.com"
 ADMIN_SEED_PASSWORD="..."
+ADMIN_SEED_FORCE_PASSWORD_RESET="false"
+ADMIN_NOTIFICATION_EMAIL="aygoodriverlake@gmail.com"
+ADMIN_2FA_ENABLED="false"
 ```
 
 Deploy with the normal production build:
@@ -126,10 +145,29 @@ Apply migrations and production seed against the Railway database:
 
 ```bash
 pnpm prisma:migrate:deploy
-pnpm db:seed
+pnpm db:bootstrap-admin
 ```
 
 Use `migrate deploy` on Railway; reserve `migrate dev` for local development.
+
+## Authentication
+
+Regular users and administrators use the same public login page:
+
+```text
+/en/account
+```
+
+There is no separate public administrator login page or public admin navigation
+link. The administrator email is `aygoodriverlake@gmail.com`; the password is read
+from `ADMIN_SEED_PASSWORD` in the ignored `.env` file and must never be committed.
+
+After successful login, administrators are redirected to `/admin`. Regular users
+stay in the account area, where they can edit name, phone, preferred language,
+change password/email for credential accounts, and view their own booking history.
+
+Google login is hidden until both `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` are
+configured with real values.
 
 ## Validation Commands
 
