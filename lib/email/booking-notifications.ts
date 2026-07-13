@@ -1,92 +1,80 @@
-import type { Locale } from "@/config/site";
-import { formatCurrencyAmd, formatDateRange } from "@/lib/utils/format";
-import { safeSendEmail, toEmailHtml } from "./mailer";
+import { EmailType } from "@prisma/client";
+import { getAdminNotificationEmail } from "./config";
+import { safeSendEmail } from "./mailer";
+import type { BookingEmailData } from "./types";
+import {
+  adminBookingRequestTemplate,
+  bookingCancelledTemplate,
+  bookingConfirmedTemplate,
+  bookingRejectedTemplate,
+  bookingRequestCustomerTemplate,
+} from "./templates/booking";
 
-type BookingEmailBase = {
-  bookingId: string;
-  locale: Locale;
-  houseName: string;
-  guestName: string;
-  guestEmail: string;
-  guestPhone?: string;
-  checkIn: Date;
-  checkOut: Date;
-  guestCount: number;
-  totalPriceAmd: number;
-};
+export async function sendBookingRequestEmails(data: BookingEmailData) {
+  const customer = bookingRequestCustomerTemplate(data);
+  const admin = adminBookingRequestTemplate(data);
 
-const adminEmail = process.env.ADMIN_EMAIL ?? "aygoodriverlake@gmail.com";
-
-export async function sendBookingRequestEmails(options: BookingEmailBase) {
-  const subject = `Aygoot booking request for ${options.houseName}`;
-  const range = formatDateRange(options.locale, options.checkIn, options.checkOut);
-  const price = formatCurrencyAmd(options.locale, options.totalPriceAmd);
-  const lines = [
-    `Hello ${options.guestName},`,
-    `We received your booking request for ${options.houseName}.`,
-    "",
-    `Dates: ${range}`,
-    `Guests: ${options.guestCount}`,
-    `Estimated total: ${price}`,
-    "",
-    "Our team will review the request shortly and confirm availability by email.",
-  ];
-
-  await Promise.all([
+  const [customerResult, adminResult] = await Promise.all([
     safeSendEmail({
-      to: options.guestEmail,
-      subject,
-      text: lines.join("\n"),
-      html: toEmailHtml(lines),
+      to: data.guestEmail,
+      subject: customer.subject,
+      text: customer.text,
+      html: customer.html,
+      bookingId: data.bookingId,
+      type: EmailType.BOOKING_REQUEST_CUSTOMER,
     }),
     safeSendEmail({
-      to: adminEmail,
-      subject: `New Aygoot request: ${options.houseName}`,
-      text: [
-        `Booking ID: ${options.bookingId}`,
-        `Guest: ${options.guestName}`,
-        `Email: ${options.guestEmail}`,
-        `Phone: ${options.guestPhone ?? "—"}`,
-        `Dates: ${range}`,
-      ].join("\n"),
+      to: getAdminNotificationEmail(),
+      subject: admin.subject,
+      text: admin.text,
+      html: admin.html,
+      replyTo: data.guestEmail,
+      bookingId: data.bookingId,
+      type: EmailType.BOOKING_REQUEST_ADMIN,
     }),
   ]);
+
+  return {
+    customerSent: customerResult.success,
+    adminSent: adminResult.success,
+  };
 }
 
-export async function sendBookingConfirmationEmail(options: BookingEmailBase) {
-  const range = formatDateRange(options.locale, options.checkIn, options.checkOut);
-  const price = formatCurrencyAmd(options.locale, options.totalPriceAmd);
-  const lines = [
-    `Hello ${options.guestName},`,
-    `Your stay at ${options.houseName} has been confirmed.`,
-    "",
-    `Dates: ${range}`,
-    `Guests: ${options.guestCount}`,
-    `Total: ${price}`,
-    "",
-    "We’ll follow up with practical arrival details shortly.",
-  ];
+export async function sendBookingConfirmationEmail(data: BookingEmailData) {
+  const content = bookingConfirmedTemplate(data);
 
-  await safeSendEmail({
-    to: options.guestEmail,
-    subject: `Aygoot confirmed your stay at ${options.houseName}`,
-    text: lines.join("\n"),
-    html: toEmailHtml(lines),
+  return safeSendEmail({
+    to: data.guestEmail,
+    subject: content.subject,
+    text: content.text,
+    html: content.html,
+    bookingId: data.bookingId,
+    type: EmailType.BOOKING_CONFIRMED,
   });
 }
 
-export async function sendBookingRejectedEmail(options: BookingEmailBase) {
-  const lines = [
-    `Hello ${options.guestName},`,
-    `We’re sorry, but your request for ${options.houseName} could not be confirmed.`,
-    "",
-    "You can reply to this email if you’d like alternative dates or another house recommendation.",
-  ];
+export async function sendBookingRejectedEmail(data: BookingEmailData) {
+  const content = bookingRejectedTemplate(data);
 
-  await safeSendEmail({
-    to: options.guestEmail,
-    subject: `Aygoot update for ${options.houseName}`,
-    text: lines.join("\n"),
-    html: toEmailHtml(lines),
+  return safeSendEmail({
+    to: data.guestEmail,
+    subject: content.subject,
+    text: content.text,
+    html: content.html,
+    bookingId: data.bookingId,
+    type: EmailType.BOOKING_REJECTED,
+  });
+}
+
+export async function sendBookingCancelledEmail(data: BookingEmailData) {
+  const content = bookingCancelledTemplate(data);
+
+  return safeSendEmail({
+    to: data.guestEmail,
+    subject: content.subject,
+    text: content.text,
+    html: content.html,
+    bookingId: data.bookingId,
+    type: EmailType.BOOKING_CANCELLED,
   });
 }

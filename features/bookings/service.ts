@@ -1,9 +1,15 @@
-import { BookingStatus, HouseStatus } from "@prisma/client";
+import { randomBytes } from "crypto";
+import { BookingStatus, HouseStatus, Prisma } from "@prisma/client";
 import type { Session } from "next-auth";
 import { prisma } from "@/lib/db/prisma";
 import { parseDateOnly, rangesOverlap } from "@/lib/utils/dates";
 import { calculateStayTotalAmd } from "@/lib/utils/pricing";
-import { sendBookingConfirmationEmail, sendBookingRejectedEmail, sendBookingRequestEmails } from "@/lib/email/booking-notifications";
+import {
+  sendBookingCancelledEmail,
+  sendBookingConfirmationEmail,
+  sendBookingRejectedEmail,
+  sendBookingRequestEmails,
+} from "@/lib/email/booking-notifications";
 import type { Locale } from "@/config/site";
 import { bookingSchema } from "./validation";
 
@@ -32,6 +38,7 @@ export async function getUserBookings(userId: string, locale: Locale) {
 
     return {
       id: booking.id,
+      orderId: booking.orderId,
       status: booking.status,
       checkIn: booking.checkIn,
       checkOut: booking.checkOut,
@@ -45,6 +52,77 @@ export async function getUserBookings(userId: string, locale: Locale) {
       },
     };
   });
+}
+
+function generateBookingOrderId() {
+  return `AYG-${randomBytes(4).toString("hex").toUpperCase()}`;
+}
+
+async function createBookingWithOrderId(data: Omit<Prisma.BookingUncheckedCreateInput, "orderId">) {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      return await prisma.booking.create({
+        data: {
+          ...data,
+          orderId: generateBookingOrderId(),
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002" &&
+        Array.isArray(error.meta?.target) &&
+        error.meta.target.includes("orderId")
+      ) {
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  throw new Error("Unable to generate a unique booking reference.");
+}
+
+function toBookingEmailData({
+  booking,
+  locale,
+  houseName,
+}: {
+  booking: {
+    id: string;
+    orderId: string;
+    userId: string | null;
+    guestName: string;
+    guestEmail: string;
+    guestPhone: string | null;
+    guestNotes: string | null;
+    checkIn: Date;
+    checkOut: Date;
+    guestCount: number;
+    totalPriceAmd: number;
+    status: BookingStatus;
+    createdAt: Date;
+  };
+  locale: Locale;
+  houseName: string;
+}) {
+  return {
+    bookingId: booking.id,
+    orderId: booking.orderId,
+    locale,
+    houseName,
+    guestName: booking.guestName,
+    guestEmail: booking.guestEmail,
+    guestPhone: booking.guestPhone,
+    guestNotes: booking.guestNotes,
+    checkIn: booking.checkIn,
+    checkOut: booking.checkOut,
+    guestCount: booking.guestCount,
+    totalPriceAmd: booking.totalPriceAmd,
+    status: booking.status,
+    userId: booking.userId,
+    createdAt: booking.createdAt,
+  };
 }
 
 export async function getBlockedRanges(houseId: string) {
@@ -157,20 +235,18 @@ export async function createBookingRequest(input: unknown, session: Session | nu
   }
 
   const totalPriceAmd = calculateStayTotalAmd(checkIn, checkOut, house);
-  const booking = await prisma.booking.create({
-    data: {
-      houseId: house.id,
-      userId: session?.user?.id ?? null,
-      guestName: payload.guestName,
-      guestEmail: payload.guestEmail.toLowerCase(),
-      guestPhone: payload.guestPhone,
-      guestCount: payload.guestCount,
-      checkIn,
-      checkOut,
-      locale: payload.locale,
-      totalPriceAmd,
-      guestNotes: payload.guestNotes || null,
-    },
+  const booking = await createBookingWithOrderId({
+    houseId: house.id,
+    userId: session?.user?.id ?? null,
+    guestName: payload.guestName,
+    guestEmail: payload.guestEmail.toLowerCase(),
+    guestPhone: payload.guestPhone,
+    guestCount: payload.guestCount,
+    checkIn,
+    checkOut,
+    locale: payload.locale,
+    totalPriceAmd,
+    guestNotes: payload.guestNotes || null,
   });
 
   const translation =
@@ -178,17 +254,13 @@ export async function createBookingRequest(input: unknown, session: Session | nu
     house.translations.find((item) => item.locale === "en") ??
     house.translations[0];
 
-  await sendBookingRequestEmails({
-    bookingId: booking.id,
-    locale: payload.locale,
-    houseName: translation?.name ?? house.slug,
-    guestName: booking.guestName,
-    guestEmail: booking.guestEmail,
-    guestPhone: booking.guestPhone,
-    checkIn,
-    checkOut,
-    guestCount: booking.guestCount,
-    totalPriceAmd,
+  const mail = await sendBookingRequestEmails({
+    ...toBookingEmailData({
+      booking,
+      locale: payload.locale,
+      houseName: translation?.name ?? house.slug,
+    }),
+    houseSlug: house.slug,
   });
 
   return {
@@ -197,9 +269,11 @@ export async function createBookingRequest(input: unknown, session: Session | nu
     body: {
       booking: {
         id: booking.id,
+        orderId: booking.orderId,
         status: booking.status,
         totalPriceAmd,
       },
+      mail,
     },
   };
 }
@@ -209,6 +283,15 @@ export async function updateBookingStatus(
   status: BookingStatus,
   adminNotes?: string | null,
 ) {
+  const existing = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: { status: true },
+  });
+
+  if (!existing) {
+    throw new Error("Booking not found.");
+  }
+
   const booking = await prisma.booking.update({
     where: { id: bookingId },
     data: {
@@ -230,32 +313,29 @@ export async function updateBookingStatus(
     booking.house.translations.find((item) => item.locale === "en") ??
     booking.house.translations[0];
 
-  if (status === BookingStatus.CONFIRMED) {
-    await sendBookingConfirmationEmail({
-      bookingId: booking.id,
-      locale,
-      houseName: translation?.name ?? booking.house.slug,
-      guestName: booking.guestName,
-      guestEmail: booking.guestEmail,
-      checkIn: booking.checkIn,
-      checkOut: booking.checkOut,
-      guestCount: booking.guestCount,
-      totalPriceAmd: booking.totalPriceAmd,
-    });
+  if (existing.status === status) {
+    return booking;
   }
 
-  if (status === BookingStatus.REJECTED || status === BookingStatus.CANCELLED) {
-    await sendBookingRejectedEmail({
-      bookingId: booking.id,
+  const data = {
+    ...toBookingEmailData({
+      booking,
       locale,
       houseName: translation?.name ?? booking.house.slug,
-      guestName: booking.guestName,
-      guestEmail: booking.guestEmail,
-      checkIn: booking.checkIn,
-      checkOut: booking.checkOut,
-      guestCount: booking.guestCount,
-      totalPriceAmd: booking.totalPriceAmd,
-    });
+    }),
+    houseSlug: booking.house.slug,
+  };
+
+  if (status === BookingStatus.CONFIRMED) {
+    await sendBookingConfirmationEmail(data);
+  }
+
+  if (status === BookingStatus.REJECTED) {
+    await sendBookingRejectedEmail(data);
+  }
+
+  if (status === BookingStatus.CANCELLED) {
+    await sendBookingCancelledEmail(data);
   }
 
   return booking;

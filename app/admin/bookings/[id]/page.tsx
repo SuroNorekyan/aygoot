@@ -39,6 +39,9 @@ export default async function AdminBookingDetailPage({
         <h2 className="display-font mt-3 text-4xl font-medium">
           {booking.house.translations[0]?.name ?? booking.house.slug}
         </h2>
+        <p className="mt-3 inline-flex rounded-full bg-white/75 px-3 py-1 text-xs font-semibold text-[rgb(var(--muted-foreground))]">
+          Reference {booking.orderId}
+        </p>
         <div className="mt-6 grid gap-4 text-sm md:grid-cols-2">
           <div className="rounded-[22px] bg-white/70 p-4">
             <p className="font-semibold">Guest</p>

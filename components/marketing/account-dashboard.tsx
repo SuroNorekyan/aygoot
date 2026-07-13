@@ -17,6 +17,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 type BookingSummary = {
   id: string;
+  orderId: string;
   status: string;
   checkIn: Date;
   checkOut: Date;
@@ -188,6 +189,9 @@ export function AccountDashboard({ locale, user, bookings, copy }: AccountDashbo
           {nextBooking ? (
             <div className="mt-5 space-y-3 rounded-[22px] bg-white/70 p-4">
               <p className="font-semibold">{nextBooking.house.name}</p>
+              <p className="text-xs font-semibold text-[rgb(var(--muted-foreground))]">
+                {nextBooking.orderId}
+              </p>
               <p className="text-sm text-[rgb(var(--muted-foreground))]">
                 {formatDateRange(locale, nextBooking.checkIn, nextBooking.checkOut)}
               </p>
@@ -251,6 +255,9 @@ export function AccountDashboard({ locale, user, bookings, copy }: AccountDashbo
                       </Link>
                       <p className="text-sm text-[rgb(var(--muted-foreground))]">
                         {formatDateRange(locale, booking.checkIn, booking.checkOut)}
+                      </p>
+                      <p className="text-xs text-[rgb(var(--muted-foreground))]">
+                        Reference {booking.orderId}
                       </p>
                       <p className="text-xs text-[rgb(var(--muted-foreground))]">
                         Requested {formatDateTime(locale, booking.createdAt)}

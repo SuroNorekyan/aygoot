@@ -37,6 +37,21 @@ enum InquiryStatus {
   ARCHIVED
 }
 
+enum EmailDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum EmailType {
+  BOOKING_REQUEST_CUSTOMER
+  BOOKING_REQUEST_ADMIN
+  BOOKING_CONFIRMED
+  BOOKING_REJECTED
+  BOOKING_CANCELLED
+  CONTACT_INQUIRY_ADMIN
+}
+
 model User {
   id              String    @id @default(cuid())
   name            String?
@@ -173,6 +188,7 @@ model HouseAmenity {
 
 model Booking {
   id            String        @id @default(cuid())
+  orderId       String        @unique
   houseId       String
   userId        String?
   guestName     String
@@ -189,11 +205,32 @@ model Booking {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
-  user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  house           House           @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  user            User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  emailDeliveries EmailDelivery[]
 
   @@index([houseId, status, checkIn, checkOut])
   @@index([userId, createdAt])
+  @@index([orderId, createdAt])
+}
+
+model EmailDelivery {
+  id           String              @id @default(cuid())
+  bookingId    String?
+  type         EmailType
+  recipient    String
+  subject      String
+  status       EmailDeliveryStatus @default(PENDING)
+  attemptCount Int                 @default(0)
+  lastError    String?             @db.Text
+  sentAt       DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@index([bookingId, type])
+  @@index([status, createdAt])
 }
 
 model AvailabilityBlock {

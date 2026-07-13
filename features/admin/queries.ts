@@ -1,4 +1,4 @@
-import { BookingStatus } from "@prisma/client";
+import { BookingStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 
 export async function getAdminDashboardData() {
@@ -30,19 +30,74 @@ export async function getAdminDashboardData() {
   };
 }
 
-export async function getAdminBookings() {
-  return prisma.booking.findMany({
-    include: {
-      house: {
-        include: {
-          translations: {
-            where: { locale: "en" },
-            take: 1,
+const adminBookingsPageSize = 12;
+
+export async function getAdminBookings({
+  page = 1,
+  query = "",
+  status,
+}: {
+  page?: number;
+  query?: string;
+  status?: BookingStatus | "ALL";
+} = {}) {
+  const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+  const trimmedQuery = query.trim();
+  const where: Prisma.BookingWhereInput = {
+    ...(status && status !== "ALL" ? { status } : {}),
+    ...(trimmedQuery
+      ? {
+          OR: [
+            { orderId: { contains: trimmedQuery, mode: "insensitive" } },
+            { id: { contains: trimmedQuery, mode: "insensitive" } },
+            { guestName: { contains: trimmedQuery, mode: "insensitive" } },
+            { guestEmail: { contains: trimmedQuery, mode: "insensitive" } },
+            { guestPhone: { contains: trimmedQuery, mode: "insensitive" } },
+            {
+              house: {
+                OR: [
+                  { slug: { contains: trimmedQuery, mode: "insensitive" } },
+                  {
+                    translations: {
+                      some: {
+                        name: { contains: trimmedQuery, mode: "insensitive" },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        }
+      : {}),
+  };
+
+  const [bookings, total] = await Promise.all([
+    prisma.booking.findMany({
+      where,
+      include: {
+        house: {
+          include: {
+            translations: {
+              where: { locale: "en" },
+              take: 1,
+            },
           },
         },
+        user: true,
       },
-      user: true,
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+      skip: (safePage - 1) * adminBookingsPageSize,
+      take: adminBookingsPageSize,
+    }),
+    prisma.booking.count({ where }),
+  ]);
+
+  return {
+    bookings,
+    total,
+    page: safePage,
+    pageSize: adminBookingsPageSize,
+    totalPages: Math.max(1, Math.ceil(total / adminBookingsPageSize)),
+  };
 }

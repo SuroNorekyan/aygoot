@@ -68,6 +68,50 @@ pnpm check
 Use `pnpm prisma migrate dev` for local development so Prisma creates/applies migrations.
 Avoid `pnpm prisma db push` unless you intentionally want to sync a throwaway database without migration history.
 
+## Booking Mail
+
+Booking requests now generate a customer-visible reference such as `AYG-1A2B3C4D`.
+The same reference appears in:
+
+- the customer booking-request email
+- booking status emails
+- the user account booking history
+- `/admin/bookings`
+- `/admin/bookings/[id]`
+
+Required local mail variables belong in the ignored `.env` or `.env.local` file:
+
+```env
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="aygoodriverlake@gmail.com"
+SMTP_PASS="..."
+EMAIL_FROM="AyGood River Lake <aygoodriverlake@gmail.com>"
+EMAIL_REPLY_TO="aygoodriverlake@gmail.com"
+ADMIN_NOTIFICATION_EMAIL="aygoodriverlake@gmail.com"
+```
+
+For Gmail, use a Google App Password for `SMTP_PASS`; never commit it.
+
+Verify SMTP without printing secrets:
+
+```bash
+pnpm mail:test
+```
+
+The command verifies the SMTP transport and sends a clearly labeled test email to
+`MAIL_TEST_TO` when set, otherwise to `SMTP_USER`.
+
+Booking emails are tracked in `EmailDelivery`. If SMTP fails after a booking is
+saved, the booking remains in PostgreSQL and the delivery failure is logged with a
+masked recipient. Customer status emails are sent only when the booking status
+actually changes, so saving notes with the same status does not send duplicate
+status mail.
+
+Admin booking search supports booking reference, internal id, guest name, email,
+phone, cottage slug, and cottage name. Results are sorted newest first and
+paginated.
+
 ## After Seed Data Changes
 
 When only `prisma/seed.ts` changes:
