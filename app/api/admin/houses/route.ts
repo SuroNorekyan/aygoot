@@ -4,6 +4,17 @@ import { prisma } from "@/lib/db/prisma";
 import { requireAdminSession, UnauthorizedError } from "@/lib/auth/guards";
 import { adminHouseSchema, normalizeHouseImages } from "@/features/admin/validation";
 
+function uniqueHouseError(error: Prisma.PrismaClientKnownRequestError) {
+  const target = error.meta?.target;
+  const fields = Array.isArray(target) ? target : typeof target === "string" ? [target] : [];
+
+  if (fields.some((field) => field.includes("exelyRoomTypeId"))) {
+    return "This Exely room type is already assigned to another house.";
+  }
+
+  return "A house with this slug already exists.";
+}
+
 export async function GET() {
   try {
     await requireAdminSession();
@@ -54,6 +65,7 @@ export async function POST(request: Request) {
           bathrooms: payload.bathrooms,
           latitude: payload.latitude ?? null,
           longitude: payload.longitude ?? null,
+          exelyRoomTypeId: payload.exelyRoomTypeId,
           sortOrder: payload.sortOrder ?? 0,
           publishedAt: payload.status === "PUBLISHED" ? new Date() : null,
           translations: {
@@ -82,7 +94,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
     }
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      return NextResponse.json({ error: "A house with this slug already exists." }, { status: 409 });
+      return NextResponse.json({ error: uniqueHouseError(error) }, { status: 409 });
     }
     console.error(error);
     return NextResponse.json({ error: "Unable to create house." }, { status: 500 });

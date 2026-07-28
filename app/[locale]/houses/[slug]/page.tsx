@@ -8,14 +8,13 @@ import {
   TreePine,
   Users,
 } from "lucide-react";
-import { auth } from "@/auth";
 import type { Locale } from "@/config/site";
 import { getHouseBySlug } from "@/features/houses/queries";
 import { createMetadata } from "@/lib/utils/metadata";
 import { formatCurrencyAmd } from "@/lib/utils/format";
 import { getAmenityIcon } from "@/lib/utils/amenity-icons";
 import { HouseGallery } from "@/components/marketing/house-gallery";
-import { BookingRequestForm } from "@/components/marketing/booking-request-form";
+import { ExelyBookingCtaCard } from "@/components/marketing/exely-booking-cta-card";
 import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/shared/reveal";
 import { getTranslations } from "next-intl/server";
@@ -40,9 +39,9 @@ export default async function HouseDetailPage({
 }) {
   const { locale, slug } = await params;
   const copy = await getTranslations({ locale, namespace: "houses" });
+  const common = await getTranslations({ locale, namespace: "common" });
   const bookingCopy = await getTranslations({ locale, namespace: "booking" });
   const house = await getHouseBySlug(slug, locale);
-  const session = await auth();
 
   if (!house) {
     notFound();
@@ -147,25 +146,17 @@ export default async function HouseDetailPage({
             </div>
           </div>
 
-          <BookingRequestForm
+          <ExelyBookingCtaCard
             locale={locale}
-            house={house}
-            session={session}
-            copy={{
-              checkIn: bookingCopy("form.checkIn"),
-              checkOut: bookingCopy("form.checkOut"),
-              guests: bookingCopy("form.guests"),
-              name: bookingCopy("form.name"),
-              email: bookingCopy("form.email"),
-              phone: bookingCopy("form.phone"),
-              notes: bookingCopy("form.notes"),
-              submit: bookingCopy("form.submit"),
-              successTitle: bookingCopy("success.title"),
-              successDescription: bookingCopy("success.description"),
-              estimateLabel: bookingCopy("form.estimate"),
-              responseTime: bookingCopy("form.responseTime"),
-              guestFlex: bookingCopy("form.guestFlex"),
-              privacy: bookingCopy("form.privacy"),
+            exelyRoomTypeId={house.exelyRoomTypeId}
+            labels={{
+              title: bookingCopy("cta.title"),
+              description: bookingCopy("cta.description"),
+              unmappedDescription: bookingCopy("cta.unmappedDescription"),
+              directMapped: bookingCopy("cta.directMapped"),
+              genericFallback: bookingCopy("cta.genericFallback"),
+              bookNow: common("actions.bookNow"),
+              checkLiveAvailability: common("actions.checkLiveAvailability"),
             }}
           />
         </Reveal>

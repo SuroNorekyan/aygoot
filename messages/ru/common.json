@@ -24,6 +24,8 @@
     "login": "Войти",
     "register": "Создать аккаунт",
     "requestBooking": "Отправить запрос",
+    "bookNow": "Забронировать",
+    "checkLiveAvailability": "Проверить доступность",
     "learnMore": "Узнать больше",
     "viewHouse": "Смотреть дом",
     "back": "Назад"

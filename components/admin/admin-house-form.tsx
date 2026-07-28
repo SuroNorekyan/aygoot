@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { exelyRoomTypes } from "@/config/exely";
 
 type Translation = {
   locale: "en" | "hy" | "ru";
@@ -42,6 +43,7 @@ type AdminHouseFormProps = {
     bathrooms: number | null;
     latitude: number | null;
     longitude: number | null;
+    exelyRoomTypeId: string | null;
     sortOrder: number;
     amenities: string[];
     images: HouseImageRow[];
@@ -70,6 +72,7 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
     bathrooms: house?.bathrooms?.toString() ?? "",
     latitude: house?.latitude?.toString() ?? "",
     longitude: house?.longitude?.toString() ?? "",
+    exelyRoomTypeId: house?.exelyRoomTypeId ?? "",
     sortOrder: house?.sortOrder?.toString() ?? "0",
     amenityIds: house?.amenities ?? [],
     images: house?.images?.length
@@ -249,6 +252,7 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
         bathrooms: form.bathrooms ? Number(form.bathrooms) : null,
         latitude: form.latitude ? Number(form.latitude) : null,
         longitude: form.longitude ? Number(form.longitude) : null,
+        exelyRoomTypeId: form.exelyRoomTypeId || null,
         sortOrder: form.sortOrder ? Number(form.sortOrder) : 0,
         amenityIds: form.amenityIds,
         translations: form.translations,
@@ -344,6 +348,21 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
           <div>
             <Label htmlFor="longitude">Longitude</Label>
             <Input id="longitude" value={form.longitude} onChange={(event) => setForm((prev) => ({ ...prev, longitude: event.target.value }))} />
+          </div>
+          <div>
+            <Label htmlFor="exelyRoomTypeId">Exely room type</Label>
+            <Select
+              id="exelyRoomTypeId"
+              value={form.exelyRoomTypeId}
+              onChange={(event) => setForm((prev) => ({ ...prev, exelyRoomTypeId: event.target.value }))}
+            >
+              <option value="">Not mapped</option>
+              {exelyRoomTypes.map((room) => (
+                <option key={room.id} value={room.id}>
+                  {room.id} — {room.englishLabel}
+                </option>
+              ))}
+            </Select>
           </div>
           <div>
             <Label htmlFor="sortOrder">Sort order</Label>

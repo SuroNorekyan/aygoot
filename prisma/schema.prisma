@@ -122,6 +122,7 @@ model House {
   bathrooms        Int?
   latitude         Float?
   longitude        Float?
+  exelyRoomTypeId  String?             @unique
   sortOrder        Int                 @default(0)
   publishedAt      DateTime?
   createdAt        DateTime            @default(now())

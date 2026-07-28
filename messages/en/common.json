@@ -24,6 +24,8 @@
     "login": "Log in",
     "register": "Create account",
     "requestBooking": "Request booking",
+    "bookNow": "Book now",
+    "checkLiveAvailability": "Check live availability",
     "learnMore": "Learn more",
     "viewHouse": "View house",
     "back": "Back"

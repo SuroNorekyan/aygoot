@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowUpRight, Bath, BedDouble, MapPin, Users } from "lucide-react";
 import type { Locale } from "@/config/site";
+import { buildExelyBookingHref } from "@/config/exely";
 import { Link } from "@/lib/i18n/navigation";
 import { formatCurrencyAmd } from "@/lib/utils/format";
 import { getAmenityIcon } from "@/lib/utils/amenity-icons";
@@ -16,6 +17,7 @@ type HouseCardProps = {
     pricePerNightAmd: number;
     priceWorkdaysAmd: number;
     priceWeekdaysAmd: number;
+    exelyRoomTypeId?: string | null;
     guestCapacity: number;
     bedrooms: number | null;
     bathrooms: number | null;
@@ -36,6 +38,7 @@ type HouseCardProps = {
     bathrooms: string;
     featured: string;
     viewHouse: string;
+    bookNow: string;
   };
 };
 
@@ -159,14 +162,25 @@ export function HouseCard({ locale, house, labels }: HouseCardProps) {
           </div>
         ) : null}
 
-        <Link
-          href={`/houses/${house.slug}`}
-          locale={locale}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[rgb(var(--foreground))] transition hover:text-[rgb(var(--forest))]"
-        >
-          {labels.viewHouse}
-          <ArrowUpRight className="h-4 w-4" />
-        </Link>
+        <div className="mt-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Link
+            href={`/houses/${house.slug}`}
+            locale={locale}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[rgb(var(--foreground))] transition hover:text-[rgb(var(--forest))]"
+          >
+            {labels.viewHouse}
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
+          <a
+            href={buildExelyBookingHref(locale, {
+              roomType: house.exelyRoomTypeId,
+            })}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[rgb(var(--forest))] px-4 py-2.5 text-sm font-semibold text-[rgb(var(--forest-foreground))] shadow-[0_14px_28px_rgba(74,95,72,0.18)] transition hover:bg-[rgba(var(--forest),0.92)] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ring))] focus:ring-offset-2"
+          >
+            {labels.bookNow}
+            <ArrowUpRight className="h-4 w-4" />
+          </a>
+        </div>
       </div>
     </article>
   );

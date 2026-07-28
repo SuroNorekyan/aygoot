@@ -63,6 +63,7 @@ export default async function AdminHouseDetailPage({
           bathrooms: house.bathrooms,
           latitude: house.latitude,
           longitude: house.longitude,
+          exelyRoomTypeId: house.exelyRoomTypeId,
           sortOrder: house.sortOrder,
           amenities: house.houseAmenities.map((item) => item.amenityId),
           images: house.images.map((image) => ({

@@ -4,11 +4,20 @@ import { auth } from "@/auth";
 import { ADMIN_2FA_COOKIE, verifyAdminTwoFactorToken } from "@/lib/security/admin-2fa";
 import { isAdminTwoFactorEnabled } from "@/lib/security/admin-flags";
 import { routing } from "@/lib/i18n/routing";
+import { defaultLocale, isLocale } from "@/config/site";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
 export default auth(async (request) => {
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/booking" || pathname === "/booking/") {
+    const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
+    const locale = cookieLocale && isLocale(cookieLocale) ? cookieLocale : defaultLocale;
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}/booking`;
+    return NextResponse.redirect(url);
+  }
 
   if (pathname.startsWith("/admin")) {
     if (!request.auth?.user) {

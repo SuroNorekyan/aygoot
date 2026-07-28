@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { siteConfig } from "@/config/site";
+import { exelyGoogleVerificationToken } from "@/config/exely";
 import { Providers } from "@/components/shared/providers";
 
 export const metadata: Metadata = {
@@ -9,6 +10,9 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  verification: {
+    google: exelyGoogleVerificationToken,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

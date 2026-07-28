@@ -89,6 +89,7 @@ export default async function HousesPage({
                 bathrooms: copy("card.bathrooms"),
                 featured: copy("card.featured"),
                 viewHouse: common("actions.viewHouse"),
+                bookNow: common("actions.bookNow"),
               }}
             />
           </Reveal>

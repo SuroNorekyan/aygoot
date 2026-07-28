@@ -156,3 +156,102 @@ video {
 .soft-ring {
   box-shadow: 0 0 0 4px rgba(var(--ring), 0.16);
 }
+
+.exely-search-shell {
+  position: relative;
+  z-index: 20;
+}
+
+#block-search,
+#block-search * {
+  box-sizing: border-box;
+}
+
+#block-search {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  overflow: visible;
+  border: 1px solid rgba(var(--border-soft), 0.3);
+  border-radius: 20px;
+  background:
+    radial-gradient(68.05% 550.69% at 3.44% 16.67%, #fcfcfa 0%, #f2f3f0 100%),
+    rgba(var(--surface-strong), 0.9);
+  box-shadow:
+    0 24px 62px rgba(var(--shadow), 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.58) inset;
+}
+
+.be-container {
+  min-height: 112px;
+  padding: 0 16px;
+}
+
+@media (min-width: 640px) {
+  .be-container {
+    min-height: 96px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+#be-booking-form {
+  width: 100%;
+  min-height: 680px;
+  max-width: 1280px;
+  margin: 0 auto;
+  overflow: visible;
+  border-radius: 20px;
+}
+
+#tl-booking-cart {
+  z-index: 1 !important;
+}
+
+.exely-booking-shell {
+  min-height: 720px;
+  overflow: visible;
+  border: 1px solid rgba(var(--border-soft), 0.24);
+  border-radius: 28px;
+  background: rgba(var(--surface-strong), 0.48);
+  box-shadow: 0 24px 70px rgba(var(--shadow), 0.08);
+}
+
+.exely-noscript,
+.exely-fallback {
+  margin: 12px auto 0;
+  max-width: 1280px;
+  border: 1px solid rgba(var(--border-soft), 0.3);
+  border-radius: 20px;
+  background: rgba(var(--surface-strong), 0.84);
+  padding: 16px;
+  color: rgb(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.exely-fallback a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  background: rgb(var(--forest));
+  padding: 0.65rem 1rem;
+  color: rgb(var(--forest-foreground));
+  font-weight: 700;
+}
+
+@media (max-width: 639px) {
+  #block-search {
+    border-radius: 24px;
+  }
+
+  #be-booking-form {
+    min-height: 760px;
+  }
+
+  .exely-booking-shell {
+    min-height: 800px;
+    border-radius: 24px;
+  }
+}

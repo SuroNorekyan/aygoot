@@ -37,7 +37,13 @@ export function AdminBookingStatusForm({
           });
 
           if (!response.ok) {
-            toast({ title: "Unable to update booking.", variant: "destructive" });
+            const body = (await response.json().catch(() => null)) as {
+              error?: string;
+            } | null;
+            toast({
+              title: body?.error ?? "Unable to update booking.",
+              variant: "destructive",
+            });
             return;
           }
 

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { locales } from "@/config/site";
+import { isSupportedExelyRoomTypeId } from "@/config/exely";
 
 const translationSchema = z.object({
   locale: z.enum(locales),
@@ -31,6 +32,16 @@ export const adminHouseSchema = z.object({
   bathrooms: z.coerce.number().int().min(1).max(20).optional().nullable(),
   latitude: z.coerce.number().optional().nullable(),
   longitude: z.coerce.number().optional().nullable(),
+  exelyRoomTypeId: z
+    .string()
+    .trim()
+    .optional()
+    .nullable()
+    .transform((value) => value || null)
+    .refine(
+      (value) => value === null || isSupportedExelyRoomTypeId(value),
+      "Select a valid Exely room type.",
+    ),
   sortOrder: z.coerce.number().int().min(0).optional(),
   amenityIds: z.array(z.string()).default([]),
   translations: z.array(translationSchema).min(1),

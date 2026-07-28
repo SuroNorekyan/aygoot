@@ -22,5 +22,24 @@
     "confirmed": "Confirmed",
     "rejected": "Rejected",
     "cancelled": "Cancelled"
+  },
+  "page": {
+    "title": "Book online at AyGood River Lake — Official website",
+    "eyebrow": "Official online booking",
+    "heading": "Book online at AyGood River Lake",
+    "description": "Choose your dates in the official Exely Booking Engine to see live availability, final prices, and available rates."
+  },
+  "exely": {
+    "unavailable": "Online booking is temporarily unavailable. Please contact AyGood directly.",
+    "contactAction": "Email AyGood",
+    "searchRegion": "Online booking search",
+    "bookingRegion": "Exely booking engine"
+  },
+  "cta": {
+    "title": "Live prices and availability",
+    "description": "Final availability, rates, and reservations are handled by Exely. Continue to the official booking engine for this house.",
+    "unmappedDescription": "Final availability, rates, and reservations are handled by Exely. Continue to the official booking engine to view all available houses.",
+    "directMapped": "This house opens with its Exely room type selected.",
+    "genericFallback": "This house is not mapped to a specific Exely room yet, so the booking engine opens with all rooms available."
   }
 }

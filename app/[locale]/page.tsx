@@ -274,6 +274,7 @@ export default async function HomePage({
                   bathrooms: housesCopy("card.bathrooms"),
                   featured: housesCopy("card.featured"),
                   viewHouse: common("actions.viewHouse"),
+                  bookNow: common("actions.bookNow"),
                 }}
               />
             </Reveal>

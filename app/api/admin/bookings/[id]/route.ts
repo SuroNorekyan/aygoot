@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { BookingStatus } from "@prisma/client";
 import { requireAdminSession, UnauthorizedError } from "@/lib/auth/guards";
-import { updateBookingStatus } from "@/features/bookings/service";
+import {
+  BookingAvailabilityConflictError,
+  updateBookingStatus,
+} from "@/features/bookings/service";
 import { bookingStatusSchema } from "@/features/bookings/validation";
 
 export async function PATCH(
@@ -31,6 +34,9 @@ export async function PATCH(
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
+    }
+    if (error instanceof BookingAvailabilityConflictError) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
     }
     console.error(error);
     return NextResponse.json({ error: "Unable to update booking." }, { status: 500 });
