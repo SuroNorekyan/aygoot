@@ -35,6 +35,12 @@
     "searchRegion": "Online booking search",
     "bookingRegion": "Exely booking engine"
   },
+  "support": {
+    "eyebrow": "Need help booking?",
+    "title": "AyGood can help while online booking is being activated.",
+    "description": "If Exely shows that online booking is temporarily unavailable, please contact AyGood directly. The live booking widget remains visible above and will work as soon as Exely finishes activating the property.",
+    "emailAction": "Email AyGood"
+  },
   "cta": {
     "title": "Live prices and availability",
     "description": "Final availability, rates, and reservations are handled by Exely. Continue to the official booking engine for this house.",

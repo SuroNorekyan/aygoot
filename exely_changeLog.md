@@ -55,7 +55,7 @@ Locale differences found: only the `setContext` language argument differs in the
 - `config/exely.ts`: typed Exely constants and helpers: `getExelyLocale`, `buildExelyBookingHref`, `isSupportedExelyRoomTypeId`, `isSupportedExelyOfferId`.
 - `.gitattributes`: marks PDFs as binary so the Exely checklist PDF is stored without noisy text diffs.
 - `components/exely/exely-script.tsx`: global Exely loader script using the official fallback-host behavior.
-- `components/exely/exely-initializer.tsx`: client-side queue/bootstrap helper for containers mounted during navigation.
+- `components/exely/exely-initializer.tsx`: client-side queue/bootstrap helper that embeds only mounted containers during navigation.
 - `components/exely/exely-search-form.tsx`: reusable search-form container.
 - `components/exely/exely-booking-form.tsx`: reusable booking-form container.
 - `components/exely/exely-fallback.tsx`: translated timeout fallback with phone/email actions.
@@ -69,7 +69,7 @@ Locale differences found: only the `setContext` language argument differs in the
 
 - `app/layout.tsx`: added Google Search Console verification metadata.
 - `app/[locale]/layout.tsx`: added Exely script and route-aware public shell.
-- `app/[locale]/booking/page.tsx`: replaced redirect placeholder with focused Exely booking page and localized metadata.
+- `app/[locale]/booking/page.tsx`: replaced redirect placeholder with focused Exely booking page, localized metadata, and a persistent contact fallback below the widget.
 - `app/[locale]/page.tsx`: passes Book now label into house cards.
 - `app/[locale]/houses/page.tsx`: passes Book now label into house cards.
 - `app/[locale]/houses/[slug]/page.tsx`: removed auth/session and `BookingRequestForm`; added Exely CTA card.
@@ -141,6 +141,12 @@ The search form is placed once in the localized public shell below the fixed hea
 
 AyGood styling is preserved with cream surfaces, forest-green actions, rounded cards, subtle borders, Newsreader headings, and Manrope body text. Fallback and `noscript` states include direct contact actions.
 
+Final polish changed Exely initialization so the global loader queues only `setContext`. The client initializer queues `search-form` only when `#be-search-form` exists and `booking-form` only when `#be-booking-form` exists. Mounted containers are marked after queuing to prevent duplicate widgets during React development effects or client navigation. Native navigation and locale changes still fully initialize the correct Exely locale.
+
+The booking page now has a persistent localized AyGood contact card below the Booking Engine. It is intentionally below the widget, so it does not cover, replace, or hide Exely output. Exely error code `92` remains visible if Exely returns it.
+
+The houses listing hero image and the first house gallery image now use Next.js priority loading to reduce above-the-fold LCP warnings on touched cottage pages.
+
 ## 12. Legacy Booking Conflict Fix
 
 Original problem: two overlapping `PENDING` bookings for the same house could both be changed to `CONFIRMED`.
@@ -205,6 +211,7 @@ Code-complete work:
 
 External pending work:
 
+- Exely must resolve temporary unavailability / error code `92` for hotel/property `#514661`; this is an external Exely activation/configuration issue, not an AyGood code issue.
 - AyGood management must confirm exact house-to-room mappings.
 - Exely representative must verify integration and Channel Manager setup.
 - Booking.com mappings must be verified through Exely.
@@ -223,4 +230,4 @@ Switch back to `main` for an application rollback, or revert the Exely integrati
 - Exely rendering verified: blocked for full browser widget rendering; local containers/scripts and loader host reachability verified.
 - Channel Manager verified: external pending.
 - Production reservation flow verified: not performed.
-- Unresolved blockers: Prisma migrate engine local failure details, full browser/viewport verification, management mappings, Exely/Booking.com external acceptance.
+- Unresolved blockers: Prisma migrate engine local failure details, full browser/viewport verification, Exely error `92` activation/configuration for hotel/property `#514661`, management mappings, Exely/Booking.com external acceptance.

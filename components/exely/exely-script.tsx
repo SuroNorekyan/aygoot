@@ -1,17 +1,10 @@
 import Script from "next/script";
-import {
-  exelyContainers,
-  exelyContextId,
-  exelyLoaderHosts,
-  getExelyLocale,
-} from "@/config/exely";
+import { exelyContextId, exelyLoaderHosts, getExelyLocale } from "@/config/exely";
 import type { Locale } from "@/config/site";
 
 export function ExelyScript({ locale }: { locale: Locale }) {
   const commands = [
     ["setContext", exelyContextId, getExelyLocale(locale)],
-    ["embed", "booking-form", { container: exelyContainers.bookingForm }],
-    ["embed", "search-form", { container: exelyContainers.searchForm }],
   ];
 
   const code = `
@@ -38,7 +31,6 @@ export function ExelyScript({ locale }: { locale: Locale }) {
     }(${JSON.stringify(exelyLoaderHosts)});
   }
 }(window, ${JSON.stringify(commands)});
-window.__aygoodExelyInitialPath = window.location.pathname + window.location.search;
 `;
 
   return (

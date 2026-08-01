@@ -20,7 +20,6 @@ declare global {
     bookingengine?: {
       integration?: BookingEngineIntegration;
     };
-    __aygoodExelyInitialPath?: string;
   }
 }
 
@@ -61,19 +60,20 @@ export function ExelyInitializer({
   bookingForm?: boolean;
 }) {
   useEffect(() => {
-    const currentPath = window.location.pathname + window.location.search;
-    if (window.__aygoodExelyInitialPath === currentPath) {
-      return;
-    }
-
     const bookingengine = (window.bookingengine = window.bookingengine ?? {});
     const integration = (bookingengine.integration =
       bookingengine.integration ?? {});
-    const commands: unknown[] = [
-      ["setContext", exelyContextId, getExelyLocale(locale)],
-    ];
+    const commands: unknown[] = [];
 
-    if (bookingForm && document.getElementById(exelyContainers.bookingForm)) {
+    const bookingContainer = document.getElementById(exelyContainers.bookingForm);
+    const searchContainer = document.getElementById(exelyContainers.searchForm);
+
+    if (
+      bookingForm &&
+      bookingContainer &&
+      bookingContainer.dataset.aygoodExelyQueued !== "true"
+    ) {
+      bookingContainer.dataset.aygoodExelyQueued = "true";
       commands.push([
         "embed",
         "booking-form",
@@ -81,13 +81,22 @@ export function ExelyInitializer({
       ]);
     }
 
-    if (searchForm && document.getElementById(exelyContainers.searchForm)) {
+    if (
+      searchForm &&
+      searchContainer &&
+      searchContainer.dataset.aygoodExelyQueued !== "true"
+    ) {
+      searchContainer.dataset.aygoodExelyQueued = "true";
       commands.push([
         "embed",
         "search-form",
         { container: exelyContainers.searchForm },
       ]);
     }
+
+    if (!commands.length) return;
+
+    commands.unshift(["setContext", exelyContextId, getExelyLocale(locale)]);
 
     integration.__cq = integration.__cq
       ? integration.__cq.concat(commands)

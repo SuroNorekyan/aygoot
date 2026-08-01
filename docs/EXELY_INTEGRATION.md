@@ -70,6 +70,14 @@ The booking page is intentionally focused: compact heading, description, one `#b
 
 The Exely containers preserve the vendor foundation styles and are wrapped with AyGood's cream background, forest-green actions, rounded surfaces, subtle borders, and reserved heights to reduce layout shift. A translated fallback appears if the widget does not render after a timeout, and `noscript` fallback copy is included.
 
+The global Exely loader queues only `setContext`. Search and booking embeds are queued by the mounted client initializer only when `#be-search-form` or `#be-booking-form` exists. Each mounted container is marked after queuing so development double effects and client navigation do not create duplicate widgets. Native navigation and locale changes still perform a full page load and initialize the correct Exely locale.
+
+The booking page also includes a persistent localized AyGood contact card below the Booking Engine. It does not cover, replace, or hide the Exely widget. This keeps the page useful while Exely booking for hotel/property `#514661` is temporarily unavailable.
+
+Exely error code `92` is not handled or hidden by AyGood. It is an external Exely activation/configuration state for hotel/property `#514661` and must be resolved in Exely.
+
+Small performance polish: the above-the-fold house listing hero image and the first house gallery image use Next.js priority loading to address LCP warnings on touched cottage pages.
+
 ## Legacy Booking Flow
 
 `POST /api/bookings` now returns `410 Gone`:
@@ -154,11 +162,13 @@ Before production release:
 - verify the Exely search form and booking engine in Chrome, Safari, Firefox, and mobile/tablet/desktop viewports;
 - confirm no duplicate loader scripts or duplicate containers;
 - confirm no horizontal scroll or clipping;
+- confirm Exely no longer logs missing-container warnings on pages that do not contain the other widget;
 - confirm Search Console sees the verification meta tag;
 - ask Exely to verify the integration quality.
 
 External Channel Manager acceptance remains pending:
 
+- Exely resolves error code `92` / temporary unavailability for hotel/property `#514661`;
 - Exely confirms room and rate mappings;
 - Exely confirms Booking.com Channel Manager connectivity;
 - management confirms current Exely availability;

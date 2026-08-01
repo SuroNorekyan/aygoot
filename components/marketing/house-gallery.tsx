@@ -20,13 +20,14 @@ export function HouseGallery({ images }: HouseGalleryProps) {
     <div className="space-y-4">
       <div className="relative overflow-hidden rounded-[34px] border border-[rgba(var(--border-soft),0.16)] shadow-[0_28px_74px_rgba(37,28,21,0.14)]" ref={emblaRef}>
         <div className="flex">
-          {images.map((image) => (
+          {images.map((image, index) => (
             <div key={image.id} className="min-w-0 flex-[0_0_100%]">
               <div className="relative aspect-[1.22] overflow-hidden bg-[rgba(var(--primary),0.08)]">
                 <Image
                   src={image.url}
                   alt={image.alt}
                   fill
+                  priority={index === 0}
                   sizes="(max-width: 1280px) 100vw, 66vw"
                   className="object-cover"
                 />
