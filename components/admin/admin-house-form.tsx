@@ -287,7 +287,7 @@ export function AdminHouseForm({ mode, house, amenityOptions }: AdminHouseFormPr
 
   return (
     <form onSubmit={submit} className="space-y-8">
-      <section className="surface-card rounded-[28px] p-6">
+      <section className="surface-card relative z-10 rounded-[28px] p-6">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <Label htmlFor="slug" requiredIndicator>Slug</Label>
